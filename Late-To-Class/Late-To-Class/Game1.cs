@@ -11,11 +11,7 @@ namespace Late_To_Class
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-
-        Player player;
-        Texture2D pTex;
-
+        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -43,12 +39,8 @@ namespace Late_To_Class
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            player = new Player();
-
-            pTex = Content.Load<Texture2D>("Kirby.png");
-
-            player.Tex = pTex;
+            GameControls.Instance.LoadControls();
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -71,9 +63,8 @@ namespace Late_To_Class
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+           
             // TODO: Add your update logic here
-            player.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -87,13 +78,7 @@ namespace Late_To_Class
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
-            spriteBatch.Begin();
-
-            player.Draw(spriteBatch);
-
-            spriteBatch.End();
-
+            
             base.Draw(gameTime);
         }
     }
