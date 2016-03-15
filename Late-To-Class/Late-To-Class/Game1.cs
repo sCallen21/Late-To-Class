@@ -9,9 +9,13 @@ namespace Late_To_Class
     /// </summary>
     public class Game1 : Game
     {
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
+
+        Player player;
+        Texture2D pTex;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -40,7 +44,11 @@ namespace Late_To_Class
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GameControls.Instance.LoadControls();
-            
+            player = new Player();
+
+            pTex = Content.Load<Texture2D>("Kirby.png");
+
+            player.Tex = pTex;
 
             // TODO: use this.Content to load your game content here
         }
@@ -63,8 +71,10 @@ namespace Late_To_Class
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-           
+
             // TODO: Add your update logic here
+
+            player.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -76,6 +86,12 @@ namespace Late_To_Class
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            spriteBatch.Begin();
+
+            player.Draw(spriteBatch);
+
+            spriteBatch.End();
 
             // TODO: Add your drawing code here
             
