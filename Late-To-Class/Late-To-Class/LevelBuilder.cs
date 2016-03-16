@@ -14,8 +14,9 @@ namespace Late_To_Class
         StreamReader input = null;
         int[,] map;
         Texture2D tileSheet;
-        Vector2 position;
+        Rectangle position;
         Texture2D[,] tiles;
+        Rectangle toDraw;
         int nMapWidth;
         int nMapHeight;
             
@@ -73,21 +74,23 @@ namespace Late_To_Class
             int tilesPerRow = tileSheet.Width / tileSize;
             int tilesPerCol = tileSheet.Height / tileSize;
             int tile;
-            Rectangle toDraw;
-            for(int y = 0; y < nMapHeight; y++)
+           for(int y = 0; y < nMapHeight; y++)
             {
                 for (int x = 0; x < nMapWidth; x++)
                 {
                     tile = map[y, x];
-                    toDraw = new Rectangle(tile / tilesPerCol, tile / tilesPerRow, tileSize, tileSize);
+                    int xPos = tile % tilesPerRow;
+                    int yPos =(tile - xPos) / tilesPerRow;
+                    toDraw = new Rectangle(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
                 }
             }
+
 
         }
 
         public void DrawTile(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(tileSheet, position, Color.White);
+            spriteBatch.Draw(tileSheet, position, toDraw, Color.White);
         }
 
 

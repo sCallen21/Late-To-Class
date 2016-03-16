@@ -121,11 +121,11 @@ namespace Late_To_Class
                         pos.Y += jumpHeight;
                         jumpHeight += 1;
 
-                        if(kbState.IsKeyDown(leftKey))
+                        if (kbState.IsKeyDown(leftKey))
                         {
                             pos.X -= 5;
                         }
-                        if(kbState.IsKeyDown(rightKey))
+                        if (kbState.IsKeyDown(rightKey))
                         {
                             pos.X += 5;
                         }
