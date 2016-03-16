@@ -17,6 +17,11 @@ namespace Late_To_Class
         private int jumpHeight;
         private int gravity;
         private int baseHeight;
+        private Keys jumpKey;
+        private Keys leftKey;
+        private Keys rightKey;
+        private Keys duckKey;
+        private Keys powerUpKey;
 
 
         public Texture2D Tex
@@ -45,6 +50,11 @@ namespace Late_To_Class
             pos = new Rectangle(200, 100, 66, 66);
             jumpHeight = pos.Y;
             baseHeight = pos.Y;
+            jumpKey = GameControls.Instance.jumpKey;
+            leftKey = GameControls.Instance.moveLeft;
+            rightKey = GameControls.Instance.moveRight;
+            duckKey = GameControls.Instance.duckKey;
+            powerUpKey = GameControls.Instance.powerUpKey;
         }
 
         public void Update(GameTime gameTime)
@@ -54,47 +64,52 @@ namespace Late_To_Class
             switch (pState)
             {
                 case playerStates.Run:
-                    if (kbState.IsKeyDown(Keys.A) && (dirRight == true || dirRight == false))
+                    if (kbState.IsKeyDown(leftKey) && (dirRight == true || dirRight == false))
                     {
                         pos.X -= 5;
                         dirRight = false;
                     }
 
-                    else if (kbState.IsKeyUp(Keys.A) && kbState.IsKeyUp(Keys.D) /*&& dirRight == true*/)
+                    if (kbState.IsKeyUp(leftKey) && kbState.IsKeyUp(rightKey) /*&& dirRight == true*/)
                     {
                         pState = playerStates.Stand;
                         //dirRight = false;
                     }
 
-                    else if (kbState.IsKeyDown(Keys.D) && (dirRight == true || dirRight == false))
+                    if (kbState.IsKeyDown(rightKey) && (dirRight == true || dirRight == false))
                     {
                         pos.X += 5;
                         dirRight = true;
                     }
 
-                    else if (kbState.IsKeyUp(Keys.D) && kbState.IsKeyUp(Keys.A) /*&& dirRight == false*/)
+                    if (kbState.IsKeyUp(rightKey) && kbState.IsKeyUp(leftKey) /*&& dirRight == false*/)
                     {
                         pState = playerStates.Stand;
                         //dirRight = true;
+                    }
+                    
+                    if(kbState.IsKeyDown(jumpKey))
+                    {
+                        pState = playerStates.Jump;
                     }
 
                     break;
 
 
                 case playerStates.Stand:
-                    if (kbState.IsKeyDown(Keys.A))
+                    if (kbState.IsKeyDown(leftKey))
                     {
                         //dirRight = false;
                         pState = playerStates.Run;
                     }
 
-                    else if (kbState.IsKeyDown(Keys.D))
+                    if (kbState.IsKeyDown(rightKey))
                     {
                         //dirRight = false;
                         pState = playerStates.Run;
 
                     }
-                    else if (kbState.IsKeyDown(Keys.W))
+                    if (kbState.IsKeyDown(jumpKey))
                     {
                         pState = playerStates.Jump;
                     }
@@ -106,6 +121,15 @@ namespace Late_To_Class
                         pos.Y += jumpHeight;
                         jumpHeight += 1;
 
+                        if(kbState.IsKeyDown(leftKey))
+                        {
+                            pos.X -= 5;
+                        }
+                        if(kbState.IsKeyDown(rightKey))
+                        {
+                            pos.X += 5;
+                        }
+
                         if (pos.Y >= baseHeight)
                         {
                             pos.Y = baseHeight;
@@ -114,7 +138,7 @@ namespace Late_To_Class
                         }
                     }
 
-                    else if (jumping == true && kbState.IsKeyDown(Keys.D))
+                    else if (jumping == true && kbState.IsKeyDown(rightKey))
                     {
                         pos.Y += jumpHeight;
                         pos.X += jumpHeight;
@@ -125,7 +149,7 @@ namespace Late_To_Class
                             pos.Y = baseHeight;
                             jumping = false;
 
-                            if (kbState.IsKeyDown(Keys.D))
+                            if (kbState.IsKeyDown(rightKey))
                             {
                                 pState = playerStates.Run;
                             }

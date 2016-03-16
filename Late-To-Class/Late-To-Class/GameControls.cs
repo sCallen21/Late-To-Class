@@ -14,11 +14,12 @@ namespace Late_To_Class
     {
         private static GameControls instance = null;
         StreamReader input = null;
-        public Keys jumpKey;
-        public Keys duckKey;
-        public Keys moveLeft;
-        public Keys moveRight;
-
+        public Keys jumpKey = Keys.W;
+        public Keys duckKey = Keys.S;
+        public Keys moveLeft = Keys.A;
+        public Keys moveRight = Keys.D;
+        public Keys powerUpKey = Keys.J;
+        Keys[] conflicting = new Keys[5];
 
         private GameControls() { }
 
@@ -43,29 +44,37 @@ namespace Late_To_Class
             try
             {
                 input = new StreamReader("controls.txt");
-
                 string line = null;
                 while ((line = input.ReadLine()) != null)
                 {
                     string[] data = line.Split(';');
-                    List<char[]> hold = new List<char[]>();
-                    char[] keyBind = new char[4];
+                    int[] keyBind = new int[5];
+                    
 
-                    for(int i = 0; i < 4; i++)
+                    for(int i = 0; i < 5; i++)
                     {
-                     hold.Add(data[i].ToCharArray());
+                        keyBind[i] = int.Parse(data[i]);
                     }
 
-                    for(int i  = 0; i < 4; i++)
-                    {
-                        keyBind[i] = hold[i][0];
-                    }        
-                    jumpKey = (Keys)(int)(char.ToUpper(keyBind[0]));
-                    duckKey = (Keys)(int)(char.ToUpper(keyBind[1]));
-                    moveLeft = (Keys)(int)(char.ToUpper(keyBind[2]));
-                    moveRight = (Keys)(int)(char.ToUpper(keyBind[3]));
+                    jumpKey = (Keys)(keyBind[0]);
+                    conflicting[0] = jumpKey;
+                    duckKey = (Keys)(keyBind[1]);
+                    conflicting[1] = duckKey;
+                    moveLeft = (Keys)(keyBind[2]);
+                    conflicting[2] = moveLeft;
+                    moveRight = (Keys)(keyBind[3]);
+                    conflicting[3] = moveRight;
+                    powerUpKey = (Keys)(keyBind[4]);
+                    conflicting[4] = powerUpKey;
 
                 }
+                if(input != null)
+                {
+                    input.Close();
+                }
+                SaveControls();
+                
+                
             }
             catch
             {
@@ -80,13 +89,16 @@ namespace Late_To_Class
             }
         }
 
+        /// <summary>
+        /// Saves the key configurations as their integer values
+        /// </summary>
         public void SaveControls()
         {
             StreamWriter output = null;
             try
             {
                 output = new StreamWriter("controls.txt");
-                string sControls = jumpKey.ToString() + ";" + duckKey.ToString() + ";" + moveLeft.ToString() + ";" + moveRight.ToString();
+                string sControls = (int)jumpKey + ";" + (int)duckKey + ";" + (int)moveLeft + ";" + (int)moveRight + ";" + (int)powerUpKey;
                 output.WriteLine(sControls);                
             }
 
@@ -101,6 +113,79 @@ namespace Late_To_Class
                 {
                     output.Close();
                 }
+            }
+        }
+
+        /// <summary>
+        /// used with the control scheme option to enable player defined controls
+        /// </summary>
+        /// <param name="keyType">the key to be reconfigured</param>
+        /// <param name="newKey">the new key to be used</param>
+        public void ConfigureControls(string keyType, Keys newKey)
+        {
+            bool bIsConflicting;
+            switch (keyType)
+            {
+                case "jump":
+                    bIsConflicting = false;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (newKey == conflicting[i])
+                        {
+                            bIsConflicting = true;
+                        }
+                    }
+                    if (!bIsConflicting)
+                        jumpKey = newKey;
+                    break;
+                case "moveLeft":
+                    bIsConflicting = false;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (newKey == conflicting[i])
+                        {
+                            bIsConflicting = true;
+                        }
+                    }
+                    if (!bIsConflicting)
+                        moveLeft = newKey;
+                    break;
+                case "moveRight":
+                    bIsConflicting = false;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (newKey == conflicting[i])
+                        {
+                            bIsConflicting = true;
+                        }
+                    }
+                    if (!bIsConflicting)
+                        moveRight = newKey;
+                    break;
+                case "duck":
+                    bIsConflicting = false;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (newKey == conflicting[i])
+                        {
+                            bIsConflicting = true;
+                        }
+                    }
+                    if (!bIsConflicting)
+                        duckKey = newKey;
+                    break;
+                case "powerUp":
+                    bIsConflicting = false;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (newKey == conflicting[i])
+                        {
+                            bIsConflicting = true;
+                        }
+                    }
+                    if (!bIsConflicting)
+                        powerUpKey = newKey;
+                    break;
             }
         }
     }
