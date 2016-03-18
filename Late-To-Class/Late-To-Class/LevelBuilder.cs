@@ -12,10 +12,10 @@ namespace Late_To_Class
     {
         private static LevelBuilder instance = null;
         StreamReader input = null;
-        int[,] map;
+        int[,] map = new int[40,40];
         Texture2D tileSheet;
+        Rectangle[,] Source;
         Rectangle position;
-        Texture2D[,] tiles;
         Rectangle toDraw;
         int nMapWidth;
         int nMapHeight;
@@ -38,6 +38,7 @@ namespace Late_To_Class
 
         public void LoadMap(string sMapName)
         {
+            
             try
             {
                 input = new StreamReader(sMapName);
@@ -79,20 +80,29 @@ namespace Late_To_Class
                 for (int x = 0; x < nMapWidth; x++)
                 {
                     tile = map[y, x];
-                    int xPos = tile % tilesPerRow;
-                    int yPos =(tile - xPos) / tilesPerRow;
-                    toDraw = new Rectangle(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
+                    
+                    {
+                        int xPos = tile % tilesPerRow;
+                        int yPos = (tile - xPos) / tilesPerRow;
+                        toDraw = new Rectangle(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
+                        Source[y, x] = toDraw;
+                    }
                 }
             }
 
 
         }
 
-        public void DrawTile(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, int tileSize, int nScreenWidth, int nScreenHeight)
         {
-            spriteBatch.Draw(tileSheet, position, toDraw, Color.White);
+
+            position = new Rectangle(tileSize, tileSize, tileSize, tileSize);
+            if (position.X >= 0 && position.X < nScreenWidth && position.Y >= 0 && position.Y < nScreenHeight)
+            {
+                spriteBatch.Draw(tileSheet, position, Source[0, 0], Color.White);
+            }
         }
-
-
+            
+        
     }
 }

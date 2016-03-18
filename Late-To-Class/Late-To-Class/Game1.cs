@@ -12,9 +12,10 @@ namespace Late_To_Class
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
         Player player;
         Texture2D pTex;
+        Texture2D testLevel;
+        Point screenSize;
 
         public Game1()
         {
@@ -43,14 +44,25 @@ namespace Late_To_Class
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            screenSize.X = GraphicsDevice.Viewport.Width;
+            screenSize.Y = GraphicsDevice.Viewport.Height;
+
+
             GameControls.Instance.LoadControls();
+            GameControls.Instance.SaveControls();
+
+
+            testLevel = Content.Load<Texture2D>("testLevel.png");
+            LevelBuilder.Instance.LoadMap("testLevel.txt");
+            LevelBuilder.Instance.TileMaker(testLevel, 32);
+
+
             player = new Player();
-
             pTex = Content.Load<Texture2D>("Kirby.png");
-
             player.Tex = pTex;
 
-            // TODO: use this.Content to load your game content here
+
+
         }
 
         /// <summary>
@@ -59,7 +71,7 @@ namespace Late_To_Class
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>
@@ -72,7 +84,7 @@ namespace Late_To_Class
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            
 
             player.Update(gameTime);
 
@@ -85,15 +97,15 @@ namespace Late_To_Class
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.SlateGray);
 
             spriteBatch.Begin();
-
+            LevelBuilder.Instance.Draw(spriteBatch, 32, screenSize.X, screenSize.Y);
             player.Draw(spriteBatch);
 
             spriteBatch.End();
 
-            // TODO: Add your drawing code here
+           
             
             base.Draw(gameTime);
         }
