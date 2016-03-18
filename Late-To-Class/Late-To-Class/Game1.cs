@@ -14,8 +14,10 @@ namespace Late_To_Class
         SpriteBatch spriteBatch;
         Player player;
         Texture2D pTex;
+        Camera camera;
         Texture2D testLevel;
         Point screenSize;
+        Point cameraOrigin;
 
         public Game1()
         {
@@ -42,22 +44,19 @@ namespace Late_To_Class
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
+            
             spriteBatch = new SpriteBatch(GraphicsDevice);
             screenSize.X = GraphicsDevice.Viewport.Width;
             screenSize.Y = GraphicsDevice.Viewport.Height;
 
 
-            GameControls.Instance.LoadControls();
-            GameControls.Instance.SaveControls();
-
-
-            testLevel = Content.Load<Texture2D>("testLevel.png");
-            LevelBuilder.Instance.LoadMap("testLevel.txt");
-            LevelBuilder.Instance.TileMaker(testLevel, 32);
-
-
-            player = new Player();
+            GameControls.Instance.LoadControls(); //loads in any previously defined user controls, else, defaults to WASDJ
+            
+            testLevel = Content.Load<Texture2D>("tiles.png"); //replace this with our actual tilesheet when available
+            LevelBuilder.Instance.LoadMap("Test.txt");        //Loads in the testing map.  
+            LevelBuilder.Instance.TileMaker(testLevel, 32);  //creates a new set of map tiles of specified size and using the testing tileSheet
+            camera = new Camera(GraphicsDevice.Viewport);    //creates a new camera that follows the player within the bounds of the map
+            player = new Player();                          
             pTex = Content.Load<Texture2D>("Kirby.png");
             player.Tex = pTex;
 
@@ -87,7 +86,9 @@ namespace Late_To_Class
             
 
             player.Update(gameTime);
-
+            camera.Update(player.position, 200 * 32, 40 * 32);
+            cameraOrigin.X = camera.cameraView.X + player.speed;
+            cameraOrigin.Y = camera.cameraView.Y;
             base.Update(gameTime);
         }
 
@@ -99,8 +100,8 @@ namespace Late_To_Class
         {
             GraphicsDevice.Clear(Color.SlateGray);
 
-            spriteBatch.Begin();
-            LevelBuilder.Instance.Draw(spriteBatch, 32, screenSize.X, screenSize.Y);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
+            LevelBuilder.Instance.Draw(spriteBatch, screenSize, cameraOrigin);
             player.Draw(spriteBatch);
 
             spriteBatch.End();

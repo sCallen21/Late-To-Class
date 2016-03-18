@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 
 namespace Late_To_Class
 {
@@ -12,13 +13,16 @@ namespace Late_To_Class
     {
         private Rectangle pos;
         private Texture2D tex;
-        //private GameTime time = new GameTime();
-
+        public Vector2 position;
+        
         private double airTime;
         private int jumpHeight;
         private int gravity;
         private int baseHeight;
 
+        /// <summary>
+        /// Keys for all user input, set by default to W,A,D,S,J
+        /// </summary>
         private Keys jumpKey;
         private Keys leftKey;
         private Keys rightKey;
@@ -26,7 +30,7 @@ namespace Late_To_Class
         private Keys powerUpKey;
 
         //these variables handle acceleration of the player
-        private int speed; //determines how fast the player is moving. This value increases as the player continues to move.
+        public int speed; //determines how fast the player is moving. This value increases as the player continues to move.
         private int maxSpeed; //determines the player's max speed
         private double accTimer; //this counts how long it's been since the player speed increased. It will measure this and when it reaches a value, increment the player's speed.
         private double timeToNextAcc; //this is the time it takes for the player to increase his speed by 1. This is measured in seconds.
@@ -77,7 +81,8 @@ namespace Late_To_Class
         public void Update(GameTime gameTime)
         {
             KeyboardState kbState = Keyboard.GetState();
-
+            position.X = pos.X;
+            position.Y = pos.Y;
             switch (pState)
             {
                 case playerStates.Run:
