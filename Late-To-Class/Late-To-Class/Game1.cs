@@ -50,6 +50,7 @@ namespace Late_To_Class
             screenSize.Y = GraphicsDevice.Viewport.Height;
 
 
+
             GameControls.Instance.LoadControls(); //loads in any previously defined user controls, else, defaults to WASDJ
             
             testLevel = Content.Load<Texture2D>("tiles.png"); //replace this with our actual tilesheet when available
@@ -57,6 +58,7 @@ namespace Late_To_Class
             LevelBuilder.Instance.TileMaker(testLevel, 32);  //creates a new set of map tiles of specified size and using the testing tileSheet
             camera = new Camera(GraphicsDevice.Viewport);    //creates a new camera that follows the player within the bounds of the map
             player = new Player();                          
+
             pTex = Content.Load<Texture2D>("Kirby.png");
             player.Tex = pTex;
 
@@ -99,6 +101,7 @@ namespace Late_To_Class
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.SlateGray);
+
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             LevelBuilder.Instance.Draw(spriteBatch, screenSize, cameraOrigin);

@@ -1,0 +1,14 @@
+diff a/Late-To-Class/Late-To-Class/Late-To-Class.csproj b/Late-To-Class/Late-To-Class/Late-To-Class.csproj	(rejected hunks)
+@@ -58,9 +58,12 @@
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </Content>
++<<<<<<< HEAD
+     <Content Include="Content\Test.txt">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </Content>
++=======
++>>>>>>> c8506f78b1e9554d6c511552c773a76587bd8445
+     <Content Include="Content\tiles.png">
+       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+     </Content>

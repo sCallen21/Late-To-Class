@@ -51,8 +51,10 @@ namespace Late_To_Class
                 input = new StreamReader(sMapName);
                 int y = 0;
                 string line = null;
+
                 map = new int[40, 200];
                 Source = new Rectangle[40, 200];
+
                 while ((line = input.ReadLine()) != null)
                 {
                     string[] data = line.Split(',');
@@ -111,6 +113,7 @@ namespace Late_To_Class
         /// <param name="spriteBatch"></param>
         /// <param name="screen">Size of the render window as a point</param>
         public void Draw(SpriteBatch spriteBatch, Point screen, Point CameraOrigin)
+   
         {
             for (int y = 0; y < nMapHeight; y++)
             {
@@ -119,6 +122,7 @@ namespace Late_To_Class
                     if (map[y, x] != -1)
                     {
                         position = new Rectangle(x * 32, y * 32, 32, 32);
+
                         if (position.X <  CameraOrigin.X + screen.X + 32 && position.X >= CameraOrigin.X && position.Y < CameraOrigin.Y + screen.Y + 32 && position.Y >= CameraOrigin.Y)
                             spriteBatch.Draw(tileSheet, position, Source[y, x], Color.White);
                     }
