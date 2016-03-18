@@ -49,11 +49,9 @@ namespace Late_To_Class
 
 
             GameControls.Instance.LoadControls();
-            GameControls.Instance.SaveControls();
-
-
-            testLevel = Content.Load<Texture2D>("testLevel.png");
-            LevelBuilder.Instance.LoadMap("testLevel.txt");
+            
+            testLevel = Content.Load<Texture2D>("tiles.png");
+            LevelBuilder.Instance.LoadMap("Test.txt");
             LevelBuilder.Instance.TileMaker(testLevel, 32);
 
 
@@ -100,7 +98,7 @@ namespace Late_To_Class
             GraphicsDevice.Clear(Color.SlateGray);
 
             spriteBatch.Begin();
-            LevelBuilder.Instance.Draw(spriteBatch, 32, screenSize.X, screenSize.Y);
+            LevelBuilder.Instance.Draw(spriteBatch, screenSize);
             player.Draw(spriteBatch);
 
             spriteBatch.End();

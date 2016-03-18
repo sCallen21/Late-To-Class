@@ -12,14 +12,14 @@ namespace Late_To_Class
     {
         private static LevelBuilder instance = null;
         StreamReader input = null;
-        int[,] map = new int[40,40];
+        int[,] map;
         Texture2D tileSheet;
         Rectangle[,] Source;
         Rectangle position;
         Rectangle toDraw;
         int nMapWidth;
         int nMapHeight;
-            
+
 
         private LevelBuilder() { }
 
@@ -38,12 +38,14 @@ namespace Late_To_Class
 
         public void LoadMap(string sMapName)
         {
-            
+
             try
             {
                 input = new StreamReader(sMapName);
                 int y = 0;
                 string line = null;
+                map = new int[40, 40];
+                Source = new Rectangle[40, 40];
                 while ((line = input.ReadLine()) != null)
                 {
                     string[] data = line.Split(',');
@@ -62,7 +64,7 @@ namespace Late_To_Class
             }
             finally
             {
-                if(input != null)
+                if (input != null)
                 {
                     input.Close();
                 }
@@ -75,34 +77,36 @@ namespace Late_To_Class
             int tilesPerRow = tileSheet.Width / tileSize;
             int tilesPerCol = tileSheet.Height / tileSize;
             int tile;
-           for(int y = 0; y < nMapHeight; y++)
+            for (int y = 0; y < nMapHeight; y++)
             {
                 for (int x = 0; x < nMapWidth; x++)
                 {
                     tile = map[y, x];
-                    
-                    {
-                        int xPos = tile % tilesPerRow;
-                        int yPos = (tile - xPos) / tilesPerRow;
-                        toDraw = new Rectangle(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
-                        Source[y, x] = toDraw;
-                    }
+                    int xPos = tile % tilesPerRow;
+                    int yPos = (tile - xPos) / tilesPerRow;
+                    toDraw = new Rectangle(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
+                    Source[y, x] = toDraw;
+
                 }
             }
 
 
         }
 
-        public void Draw(SpriteBatch spriteBatch, int tileSize, int nScreenWidth, int nScreenHeight)
+        public void Draw(SpriteBatch spriteBatch, Point screen)
         {
-
-            position = new Rectangle(tileSize, tileSize, tileSize, tileSize);
-            if (position.X >= 0 && position.X < nScreenWidth && position.Y >= 0 && position.Y < nScreenHeight)
+            for (int y = 0; y < nMapHeight; y++)
             {
-                spriteBatch.Draw(tileSheet, position, Source[0, 0], Color.White);
+                for (int x = 0; x < nMapWidth; x++)
+                {
+                    if (map[y, x] != -1)
+                    {
+                        position = new Rectangle(x * 32, y * 32, 32, 32);
+                        if (position.X < screen.X + 32 && position.X >= 0 && position.Y < screen.Y + 32 && position.Y >= 0)
+                            spriteBatch.Draw(tileSheet, position, Source[y, x], Color.White);
+                    }
+                }
             }
         }
-            
-        
     }
 }
