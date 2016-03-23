@@ -16,8 +16,10 @@ namespace Late_To_Class
         Texture2D pTex;
         Camera camera;
         Texture2D testLevel;
+        SpriteFont font;
         Point screenSize;
         Point cameraOrigin;
+        string cameraNotes;
 
         public Game1()
         {
@@ -48,6 +50,7 @@ namespace Late_To_Class
             spriteBatch = new SpriteBatch(GraphicsDevice);
             screenSize.X = GraphicsDevice.Viewport.Width;
             screenSize.Y = GraphicsDevice.Viewport.Height;
+            font = Content.Load<SpriteFont>("font");
 
 
 
@@ -89,8 +92,9 @@ namespace Late_To_Class
 
             player.Update(gameTime);
             camera.Update(player.position, 200 * 32, 40 * 32);
-            cameraOrigin.X = camera.cameraView.X + player.speed;
-            cameraOrigin.Y = camera.cameraView.Y;
+            cameraOrigin.X += camera.cameraView.X + player.speed;
+            cameraOrigin.Y += camera.cameraView.Y;
+            cameraNotes = cameraOrigin.X.ToString() + ";" + cameraOrigin.Y.ToString();
             base.Update(gameTime);
         }
 
@@ -106,7 +110,7 @@ namespace Late_To_Class
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             LevelBuilder.Instance.Draw(spriteBatch, screenSize, cameraOrigin);
             player.Draw(spriteBatch);
-
+            spriteBatch.DrawString(font, cameraNotes, new Vector2(0,0), Color.White);
             spriteBatch.End();
 
            
