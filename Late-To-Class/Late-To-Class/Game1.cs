@@ -16,10 +16,16 @@ namespace Late_To_Class
         Texture2D pTex;
         Camera camera;
         Texture2D testLevel;
-        SpriteFont font;
+        private SpriteFont smallFont, largeFont, scoreFont;
         Point screenSize;
         Point cameraOrigin;
         string cameraNotes;
+
+        private Texture2D backHelpScene, frontHelpScene;
+        private Texture2D startBackgroundTexture, startElementsTexture;
+        private StartScene startScene;
+        GameScene activeScene;
+        HelpScene helpScene;
 
         public Game1()
         {
@@ -36,7 +42,7 @@ namespace Late_To_Class
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -48,6 +54,8 @@ namespace Late_To_Class
         {
             
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            Services.AddService(typeof(SpriteBatch), spriteBatch);
+            /*
             screenSize.X = GraphicsDevice.Viewport.Width;
             screenSize.Y = GraphicsDevice.Viewport.Height;
             font = Content.Load<SpriteFont>("font");
@@ -64,6 +72,28 @@ namespace Late_To_Class
 
             pTex = Content.Load<Texture2D>("Kirby.png");
             player.Tex = pTex;
+
+            */
+
+            //Create help scene
+            frontHelpScene = Content.Load<Texture2D>("helpBack.png");
+            backHelpScene = Content.Load<Texture2D>("helpFront.jpg.");
+            helpScene = new HelpScene (this, backHelpScene, frontHelpScene);
+            Components.Add(helpScene);
+            
+
+            // Create the Start Scene
+            smallFont = Content.Load<SpriteFont>("Tahoma_40");
+            largeFont = Content.Load<SpriteFont>("Tahoma_40");
+            startBackgroundTexture = Content.Load<Texture2D>("6bd26c45-b949-4781-aaef-262d0132f60f");
+            startElementsTexture = Content.Load<Texture2D>("titleForground");
+            startScene = new StartScene(this, smallFont, largeFont,
+                startBackgroundTexture, startElementsTexture);
+            Components.Add(startScene);
+
+            startScene.Show();
+            activeScene = startScene;
+
 
 
 
@@ -87,8 +117,8 @@ namespace Late_To_Class
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
             
+            /*
 
             player.Update(gameTime);
             camera.Update(player.position, 200 * 32, 40 * 32);
@@ -96,7 +126,8 @@ namespace Late_To_Class
             cameraOrigin.Y += camera.cameraView.Y;
             cameraNotes = cameraOrigin.X.ToString() + ";" + cameraOrigin.Y.ToString();
             base.Update(gameTime);
-        }
+            */    
+    }
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -106,16 +137,16 @@ namespace Late_To_Class
         {
             GraphicsDevice.Clear(Color.SlateGray);
 
-
+            /*
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             LevelBuilder.Instance.Draw(spriteBatch, screenSize, cameraOrigin);
             player.Draw(spriteBatch);
             spriteBatch.DrawString(font, cameraNotes, new Vector2(0,0), Color.White);
+            */
+            spriteBatch.Begin();
+            base.Draw(gameTime);
             spriteBatch.End();
 
-           
-            
-            base.Draw(gameTime);
         }
     }
 }
