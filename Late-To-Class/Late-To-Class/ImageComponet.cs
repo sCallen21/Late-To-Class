@@ -5,7 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
+/// <summary>
+/// XNA GAME PROGRAMMING BOOK by: Alendro Labao
+/// </summary>
 namespace Late_To_Class
 {
     class ImageComponet:DrawableGameComponent

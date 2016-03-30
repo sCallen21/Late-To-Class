@@ -45,6 +45,7 @@
     <Compile Include="ImageComponet.cs" />
     <Compile Include="LevelBuilder.cs" />
     <Compile Include="MenuComponet.cs" />
+    <Compile Include="PlayAbleGame.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="GameControls.cs" />
     <Compile Include="Program.cs" />
