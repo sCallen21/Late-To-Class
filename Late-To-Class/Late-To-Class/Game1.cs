@@ -12,20 +12,18 @@ namespace Late_To_Class
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Player player;
-        Texture2D pTex;
-        Camera camera;
-        Texture2D testLevel;
-        private SpriteFont smallFont, largeFont, scoreFont;
-        Point screenSize;
-        Point cameraOrigin;
-        string cameraNotes;
-
-        private Texture2D backHelpScene, frontHelpScene;
-        private Texture2D startBackgroundTexture, startElementsTexture;
-        private StartScene startScene;
-        GameScene activeScene;
+        MenuComponet menuComponent;
+        //enum for FNS machine 
+        Scene activeScene;
+        //helpscene 
+        Texture2D helpBackgroundTexture;
+        Texture2D helpForegroundTexture;
         HelpScene helpScene;
+        //checks the users key presses 
+        KeyboardState kbState, previousKbState;
+        Texture2D backScene;
+        SpriteFont font;
+        Rectangle rec;
 
         public Game1()
         {
@@ -42,7 +40,7 @@ namespace Late_To_Class
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            IsMouseVisible = true;
+            activeScene = Scene.MainMenu;
             base.Initialize();
         }
 
@@ -52,51 +50,27 @@ namespace Late_To_Class
         /// </summary>
         protected override void LoadContent()
         {
-            
+            // Create a new SpriteBatch, which can be used to draw textures.
+            rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Services.AddService(typeof(SpriteBatch), spriteBatch);
-            /*
-            screenSize.X = GraphicsDevice.Viewport.Width;
-            screenSize.Y = GraphicsDevice.Viewport.Height;
-            font = Content.Load<SpriteFont>("font");
+            font = Content.Load<SpriteFont>("Tahoma_40");
+            // TODO: use this.Content to load your game content here
+            string[] menuItems = { "Start Game", "Help", "End Game" };
 
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
-
-            GameControls.Instance.LoadControls(); //loads in any previously defined user controls, else, defaults to WASDJ
-            
-            testLevel = Content.Load<Texture2D>("tiles.png"); //replace this with our actual tilesheet when available
-            LevelBuilder.Instance.LoadMap("Test.txt");        //Loads in the testing map.  
-            LevelBuilder.Instance.TileMaker(testLevel, 32);  //creates a new set of map tiles of specified size and using the testing tileSheet
-            camera = new Camera(GraphicsDevice.Viewport);    //creates a new camera that follows the player within the bounds of the map
-            player = new Player();                          
-
-            pTex = Content.Load<Texture2D>("Kirby.png");
-            player.Tex = pTex;
-
-            */
-
-            //Create help scene
-            frontHelpScene = Content.Load<Texture2D>("helpBack.png");
-            backHelpScene = Content.Load<Texture2D>("helpFront.jpg.");
-            helpScene = new HelpScene (this, backHelpScene, frontHelpScene);
+            helpBackgroundTexture = Content.Load<Texture2D>("helpBack");
+            helpForegroundTexture = Content.Load<Texture2D>("helpFront");
+            helpScene = new HelpScene(this, helpBackgroundTexture);
             Components.Add(helpScene);
-            
 
-            // Create the Start Scene
-            smallFont = Content.Load<SpriteFont>("Tahoma_40");
-            largeFont = Content.Load<SpriteFont>("Tahoma_40");
-            startBackgroundTexture = Content.Load<Texture2D>("6bd26c45-b949-4781-aaef-262d0132f60f");
-            startElementsTexture = Content.Load<Texture2D>("titleForground");
-            startScene = new StartScene(this, smallFont, largeFont,
-                startBackgroundTexture, startElementsTexture);
-            Components.Add(startScene);
+            backScene = Content.Load<Texture2D>("helpBack");
 
-            startScene.Show();
-            activeScene = startScene;
-
-
-
-
+            menuComponent = new MenuComponet(this,
+                spriteBatch,
+                Content.Load<SpriteFont>("Tahoma_40"),
+                menuItems);
+            Components.Add(menuComponent);
         }
 
         /// <summary>
@@ -105,7 +79,7 @@ namespace Late_To_Class
         /// </summary>
         protected override void UnloadContent()
         {
-            
+            // TODO: Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -117,17 +91,42 @@ namespace Late_To_Class
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
-            /*
 
-            player.Update(gameTime);
-            camera.Update(player.position, 200 * 32, 40 * 32);
-            cameraOrigin.X += camera.cameraView.X + player.speed;
-            cameraOrigin.Y += camera.cameraView.Y;
-            cameraNotes = cameraOrigin.X.ToString() + ";" + cameraOrigin.Y.ToString();
+            // TODO: Add your update logic here
+            switch (activeScene)
+            {
+                case Scene.MainMenu:
+                    if (SingleKeyPress(Keys.Enter))
+                    {
+                        switch (menuComponent.SelectedIndex)
+                        {
+                            case 0:
+                                activeScene = Scene.Game;
+                                break;
+                            case 1:
+                                activeScene = Scene.Help;
+                                break;
+                            case 2:
+                                activeScene = Scene.Exit;
+                                break;
+                        }
+                        
+                    }
+                    break;
+                case Scene.Help:
+                    if (SingleKeyPress(Keys.Back))
+                    {
+                        activeScene = Scene.MainMenu;
+                    }
+                        break;
+                case Scene.Game:
+                    break;
+                case Scene.Exit:
+                    Exit();
+                    break;
+            }
             base.Update(gameTime);
-            */    
-    }
+        }
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -135,18 +134,39 @@ namespace Late_To_Class
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.SlateGray);
+             switch (activeScene)
+            {
+                case Scene.MainMenu:
+                    //draws the main menu
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
+                    base.Draw(gameTime);
+                    spriteBatch.End();
+                    break;
+                case Scene.Help:
+                    spriteBatch.Begin();
+                    GraphicsDevice.Clear(Color.Beige);
+                    spriteBatch.Draw(backScene, rec, Color.White);
+                    spriteBatch.End();
+                    break;
+                case Scene.Game:
+                    break;
+            }
+           
+        }
 
-            /*
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
-            LevelBuilder.Instance.Draw(spriteBatch, screenSize, cameraOrigin);
-            player.Draw(spriteBatch);
-            spriteBatch.DrawString(font, cameraNotes, new Vector2(0,0), Color.White);
-            */
-            spriteBatch.Begin();
-            base.Draw(gameTime);
-            spriteBatch.End();
-
+        public bool SingleKeyPress(Keys k)
+        {
+            //gets the current keyboard state
+            kbState = Keyboard.GetState();
+            //checks if the key was pressed 
+            if (kbState.IsKeyDown(k) && previousKbState.IsKeyUp(k))
+            {
+                previousKbState = kbState;
+                return true;
+            }
+            previousKbState = kbState;
+            return false;
         }
     }
 }

@@ -42,9 +42,11 @@ namespace Late_To_Class
 
         public override void Draw(GameTime gameTime)
         {
-
+            spriteBatch.Begin();
             spriteBatch.Draw(texture, imageRect, Color.White);
             base.Draw(gameTime);
+            spriteBatch.End();
+
         }
     }
 }
