@@ -21,6 +21,19 @@ namespace Late_To_Class
         Point cameraOrigin;
         string cameraNotes;
 
+        enum GameStates // Ian Oliver, the main states throughout the game
+        {
+            Menu,
+            Options,
+            Game,
+            Pause,
+            GameOver,
+            FinishLevel
+        }
+
+        GameStates gameState;
+        GameStates prevGameState; 
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -36,6 +49,8 @@ namespace Late_To_Class
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            //gameState = GameStates.Menu; // the menu will be the default state every time the game starts
+
 
             base.Initialize();
         }
@@ -87,9 +102,43 @@ namespace Late_To_Class
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+             
+            // Ian Oliver, Here is a basic skeleton for the overall finite state machine for the menus and the game as a whole.
+            switch(gameState) 
+            {
+                case GameStates.Menu:
+                    {
 
-            
+                    }
+                    break;
+                case GameStates.Options:
+                    {
 
+                    }
+                    break;
+                case GameStates.Game:
+                    {
+
+                    }
+                    break;
+                case GameStates.Pause:
+                    {
+
+                    }
+                    break;
+                case GameStates.GameOver:
+                    {
+
+                    }
+                    break;
+                case GameStates.FinishLevel:
+                    {
+
+                    }
+                    break;
+            }
+
+            // this logic will be put in the 'Game' state enum
             player.Update(gameTime);
             camera.Update(player.position, 200 * 32, 40 * 32);
             cameraOrigin.X += camera.cameraView.X + player.speed;
