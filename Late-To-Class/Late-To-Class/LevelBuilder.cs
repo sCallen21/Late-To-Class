@@ -22,6 +22,8 @@ namespace Late_To_Class
         Rectangle toDraw;
         int nMapWidth;
         int nMapHeight;
+        Point tileSize;
+        Point MapSize;
         public List<Rectangle> collisionBoxes;
 
 
@@ -52,9 +54,16 @@ namespace Late_To_Class
                 input = new StreamReader(sMapName);
                 int y = 0;
                 string line = null;
+                
+                line = input.ReadLine();
+                string[] size = line.Split(',');
+                tileSize.Y = int.Parse(size[0]);
+                tileSize.X = int.Parse(size[1]);
+                MapSize.Y = int.Parse(size[2]);
+                MapSize.X = int.Parse(size[3]);
 
-                map = new int[40, 200];
-                Source = new Rectangle[40, 200];
+                map = new int[MapSize.Y, MapSize.X];
+                Source = new Rectangle[MapSize.Y, MapSize.X];
 
                 while ((line = input.ReadLine()) != null)
                 {
@@ -86,11 +95,11 @@ namespace Late_To_Class
         /// </summary>
         /// <param name="image">the tileSheet to be used</param>
         /// <param name="tileSize">the size(in pixels) of the tiles</param>
-        public void TileMaker(Texture2D image, int tileSize)
+        public void TileMaker(Texture2D image)
         {
             tileSheet = image;
-            int tilesPerRow = tileSheet.Width / tileSize;
-            int tilesPerCol = tileSheet.Height / tileSize;
+            int tilesPerRow = tileSheet.Width / tileSize.X;
+            int tilesPerCol = tileSheet.Height / tileSize.Y;
             int tile;
             for (int y = 0; y < nMapHeight; y++)
             {
@@ -99,7 +108,7 @@ namespace Late_To_Class
                     tile = map[y, x];
                     int xPos = tile % tilesPerRow;
                     int yPos = (tile - xPos) / tilesPerRow;
-                    toDraw = new Rectangle(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
+                    toDraw = new Rectangle(xPos * tileSize.X, yPos * tileSize.Y, tileSize.X, tileSize.Y);
                     Source[y, x] = toDraw;
                     collisionBoxes.Add(toDraw);
 
@@ -123,9 +132,9 @@ namespace Late_To_Class
                 {
                     if (map[y, x] != -1)
                     {
-                        position = new Rectangle(x * 32, y * 32, 32, 32);
+                        position = new Rectangle(x * tileSize.X, y * tileSize.Y, tileSize.X, tileSize.Y);
 
-                        if (position.X <  CameraOrigin.X + screen.X + 32 && position.X >= CameraOrigin.X && position.Y < CameraOrigin.Y + screen.Y + 32 && position.Y >= CameraOrigin.Y)
+                        if (position.X <  CameraOrigin.X + screen.X + tileSize.X && position.X >= CameraOrigin.X && position.Y < CameraOrigin.Y + screen.Y + tileSize.Y && position.Y >= CameraOrigin.Y)
                             spriteBatch.Draw(tileSheet, position, Source[y, x], Color.White);
                     }
                 }
