@@ -16,7 +16,7 @@ namespace Late_To_Class
         public Vector2 position;
         
         private double airTime;
-        private int jumpHeight;
+        private double jumpHeight;
         private int gravity;
         private int baseHeight;
 
@@ -168,8 +168,9 @@ namespace Late_To_Class
                         }
 
                         if (!dirRight)
+                        {
                             dirRight = false;
-                            
+                        }
                     }
 
                     if (kbState.IsKeyDown(jumpKey))
@@ -179,12 +180,15 @@ namespace Late_To_Class
 
                     //this checks to see what direction the player is moving, and then adds the speed accordingly
                     if (dirRight)
+                    {
                         pos.X += speed;
+                    }
+                        
                     else if (!dirRight)
+                    {
                         pos.X -= speed;
-
-                    
-
+                    }
+                        
                     break;
 
 
@@ -211,16 +215,24 @@ namespace Late_To_Class
                 case playerStates.Jump: //http://flatformer.blogspot.com/2010/02/making-character-jump-in-xnac-basic.html
                     if (jumping == true)
                     {
-                        pos.Y += jumpHeight;
-                        jumpHeight += 1;
+                        pos.Y += (int)jumpHeight;
+                        jumpHeight += 0.75;
+                        
+                        if(kbState.IsKeyUp(jumpKey))
+                        {
+                            jumpHeight += 0.75;
+
+                        }
 
                         if (kbState.IsKeyDown(leftKey))
                         {
                             dirRight = false;
+                            pos.X -= 4;
                         }
                         else if (kbState.IsKeyDown(rightKey))
                         {
                             dirRight = true;
+                            pos.X += 4;
                         }
 
                         //this decelerates the player while jumping
@@ -236,18 +248,20 @@ namespace Late_To_Class
                                 }
 
                                 accTimer += gameTime.ElapsedGameTime.TotalSeconds;
-
                             }
-                            else
-                                pState = playerStates.Stand;
                         }
 
                         //this checks to see what direction the player is moving, and then adds the speed accordingly
                         if (dirRight)
+                        {
                             pos.X += speed;
+                        }
+                            
                         else if (!dirRight)
+                        {
                             pos.X -= speed;
-
+                        }
+                            
                         //if (kbState.IsKeyDown(leftKey))
                         //{
                         //    pos.X -= speed;
@@ -264,16 +278,20 @@ namespace Late_To_Class
 
                             //this determines if the player had any speed during the jump, and if so to put them back in the running state as opposed to the standing state
                             if (speed > 0)
+                            {
                                 pState = playerStates.Run;
+                            }
                             else
+                            {
                                 pState = playerStates.Stand;
+                            }
                         }
                     }
 
                     else if (jumping == true && kbState.IsKeyDown(rightKey))
                     {
-                        pos.Y += jumpHeight;
-                        pos.X += jumpHeight;
+                        pos.Y += (int)jumpHeight;
+                        pos.X += (int)jumpHeight;
                         jumpHeight += 1;
 
                         if (pos.Y >= baseHeight)
@@ -295,7 +313,7 @@ namespace Late_To_Class
                     else
                     {
                         jumping = true;
-                        jumpHeight = -14;
+                        jumpHeight = -20;
                     }
 
                     break;
