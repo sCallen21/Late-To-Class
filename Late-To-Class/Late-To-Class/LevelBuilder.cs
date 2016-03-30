@@ -22,6 +22,7 @@ namespace Late_To_Class
         Rectangle toDraw;
         int nMapWidth;
         int nMapHeight;
+        public List<Rectangle> collisionBoxes;
 
 
         private LevelBuilder() { }
@@ -45,7 +46,7 @@ namespace Late_To_Class
         /// <param name="sMapName">name of map to be loaded</param>
         public void LoadMap(string sMapName)
         {
-
+            collisionBoxes = new List<Rectangle>();
             try
             {
                 input = new StreamReader(sMapName);
@@ -100,6 +101,7 @@ namespace Late_To_Class
                     int yPos = (tile - xPos) / tilesPerRow;
                     toDraw = new Rectangle(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
                     Source[y, x] = toDraw;
+                    collisionBoxes.Add(toDraw);
 
                 }
             }
