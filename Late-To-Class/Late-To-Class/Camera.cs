@@ -42,7 +42,7 @@ namespace Late_To_Class
            else if (position.Y > yOffset - (viewport.Height / 2)) { centre.Y = yOffset - viewport.Height / 2; }
            else { centre.Y = position.Y; }
 
-           
+           cameraView = new Rectangle((int)position.X - viewport.Width / 2, (int)position.Y - viewport.Height / 2, viewport.Width, viewport.Height);
 
            //actually moves the camera
            transform = Matrix.CreateTranslation(new Vector3(-centre.X + (viewport.Width / 2),

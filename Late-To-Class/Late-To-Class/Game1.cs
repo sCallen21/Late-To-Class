@@ -24,11 +24,14 @@ namespace Late_To_Class
         Texture2D backScene;
         SpriteFont font;
         Rectangle rec;
+        string cameraNotes = "fuck";
 
         Texture2D testLevel;
         Texture2D playerImage;
         Player player;
-
+        Camera camera;
+        Point screen;
+        Point CameraOrigin;
 
         public Game1()
         {
@@ -46,7 +49,7 @@ namespace Late_To_Class
         {
             player = new Player();
 
-            activeScene = Scene.MainMenu;
+            activeScene = Scene.Game;
             base.Initialize();
         }
 
@@ -60,8 +63,6 @@ namespace Late_To_Class
             rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Tahoma_40");
-            
-            
             string[] menuItems = { "Start Game", "Help", "End Game" };
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -72,14 +73,18 @@ namespace Late_To_Class
             
             helpScene = new HelpScene(this, helpBackgroundTexture);
             Components.Add(helpScene);
-
-            backScene = Content.Load<Texture2D>("helpBack");
-
-            menuComponent = new MenuComponet(this,
-                spriteBatch,
-                Content.Load<SpriteFont>("Tahoma_40"),
-                menuItems);
+            backScene = helpBackgroundTexture;
+            menuComponent = new MenuComponet(this, spriteBatch, font, menuItems);
             Components.Add(menuComponent);
+
+            //DO NOT FUCKING TOUCH
+            testLevel = Content.Load<Texture2D>("tiles.png");
+            LevelBuilder.Instance.LoadMap("Test.txt");
+            LevelBuilder.Instance.TileMaker(testLevel);
+            camera = new Camera(GraphicsDevice.Viewport);
+            screen.X = GraphicsDevice.Viewport.Width;
+            screen.Y = GraphicsDevice.Viewport.Height;
+
         }
 
         /// <summary>
@@ -130,6 +135,13 @@ namespace Late_To_Class
                         break;
                 case Scene.Game:
                         player.Update(gameTime);
+                        camera.Update(player.position, LevelBuilder.Instance.MapSize.X * 32, LevelBuilder.Instance.MapSize.Y * 32);
+                        CameraOrigin.X = camera.cameraView.X + player.speed;
+                        CameraOrigin.Y = camera.cameraView.Y + player.speed;
+                        cameraNotes = CameraOrigin.X.ToString() + ";" + CameraOrigin.Y.ToString();
+
+                        
+    
                     break;
                 case Scene.Exit:
                     Exit();
@@ -144,13 +156,13 @@ namespace Late_To_Class
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
+            
              switch (activeScene)
             {
                 case Scene.MainMenu:
                     //draws the main menu
+                   
                     GraphicsDevice.Clear(Color.SlateGray);
-                    
                     base.Draw(gameTime);
                     
                     break;
@@ -161,9 +173,12 @@ namespace Late_To_Class
                     
                     break;
                 case Scene.Game:
-                    
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
                     GraphicsDevice.Clear(Color.SlateGray);
+                    LevelBuilder.Instance.Draw(spriteBatch, screen, CameraOrigin);
+                    spriteBatch.DrawString(font, cameraNotes, new Vector2(50, 50), Color.White);
                     player.Draw(spriteBatch);
+                    spriteBatch.End();
                     break;
             }
              spriteBatch.End();
