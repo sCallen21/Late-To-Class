@@ -23,7 +23,7 @@ namespace Late_To_Class
         int nMapWidth;
         int nMapHeight;
         Point tileSize;
-        Point MapSize;
+        public Point MapSize;
         public List<Rectangle> collisionBoxes;
 
 
