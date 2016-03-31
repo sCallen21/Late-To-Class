@@ -25,6 +25,10 @@ namespace Late_To_Class
         SpriteFont font;
         Rectangle rec;
 
+        Texture2D testLevel;
+        Texture2D playerImage;
+        Player player;
+
 
         public Game1()
         {
@@ -40,7 +44,8 @@ namespace Late_To_Class
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            player = new Player();
+
             activeScene = Scene.MainMenu;
             base.Initialize();
         }
@@ -55,13 +60,16 @@ namespace Late_To_Class
             rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Tahoma_40");
-            // TODO: use this.Content to load your game content here
+            
+            
             string[] menuItems = { "Start Game", "Help", "End Game" };
-
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             helpBackgroundTexture = Content.Load<Texture2D>("helpBack");
             helpForegroundTexture = Content.Load<Texture2D>("helpFront");
+            playerImage = Content.Load<Texture2D>("Kirby.png");
+            player.Tex = playerImage;
+            
             helpScene = new HelpScene(this, helpBackgroundTexture);
             Components.Add(helpScene);
 
@@ -121,6 +129,7 @@ namespace Late_To_Class
                     }
                         break;
                 case Scene.Game:
+                        player.Update(gameTime);
                     break;
                 case Scene.Exit:
                     Exit();
@@ -135,25 +144,29 @@ namespace Late_To_Class
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
              switch (activeScene)
             {
                 case Scene.MainMenu:
                     //draws the main menu
-                    GraphicsDevice.Clear(Color.CornflowerBlue);
-                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
+                    GraphicsDevice.Clear(Color.SlateGray);
+                    
                     base.Draw(gameTime);
-                    spriteBatch.End();
+                    
                     break;
                 case Scene.Help:
-                    spriteBatch.Begin();
-                    GraphicsDevice.Clear(Color.Beige);
+                    
+                    GraphicsDevice.Clear(Color.SlateGray);
                     spriteBatch.Draw(backScene, rec, Color.White);
-                    spriteBatch.End();
+                    
                     break;
                 case Scene.Game:
+                    
+                    GraphicsDevice.Clear(Color.SlateGray);
+                    player.Draw(spriteBatch);
                     break;
             }
-           
+             spriteBatch.End();
         }
 
         public bool SingleKeyPress(Keys k)
