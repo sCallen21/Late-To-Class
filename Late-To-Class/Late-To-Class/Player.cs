@@ -14,7 +14,9 @@ namespace Late_To_Class
         private Rectangle pos;
         private Texture2D tex;
         public Vector2 position;
-        
+        int playerHeight = 64;
+        int playerWidth = 64;
+
         private double airTime;
         private double jumpHeight;
         private int gravity;
@@ -35,6 +37,14 @@ namespace Late_To_Class
         private double accTimer; //this counts how long it's been since the player speed increased. It will measure this and when it reaches a value, increment the player's speed.
         private double timeToNextAcc; //this is the time it takes for the player to increase his speed by 1. This is measured in seconds.
         private double timeToNextDec; //this is the time it takes for the player to decrease his speed by 1. This is measured in seconds.
+
+        //these variables handle animation of the player
+        Rectangle sourceRec; //this rectangle defines the portion of the texture it should grab.
+        double fpsRun; //how many frames of the run animation play per second
+        double timePerFrame; //how much time per frame (1/fpsRun)
+        double timeCounter; //counts ticks of the gametime
+        int currentFrameRun; //current frame of the run animation
+        int framesRun; //how many frames are in the run animation
 
 
         public Texture2D Tex
@@ -65,17 +75,27 @@ namespace Late_To_Class
             jumpHeight = pos.Y;
             baseHeight = pos.Y;
 
+            //acceleration stuff
             speed = 1; //initial speed of the player
             maxSpeed = 10; //maximum speed of the player
             accTimer = 0; //how long since last increment of speed
             timeToNextAcc = 0.1; //how long it takes to increment speed
             timeToNextDec = 0.05; //how long it takes to decrement speed
 
+            //controls stuff
             jumpKey = GameControls.Instance.jumpKey;
             leftKey = GameControls.Instance.moveLeft;
             rightKey = GameControls.Instance.moveRight;
             duckKey = GameControls.Instance.duckKey;
             powerUpKey = GameControls.Instance.powerUpKey;
+
+            //animation stuff
+            fpsRun = Math.Pow(speed * 3.5, 2.0);
+            timePerFrame = 1 / fpsRun;
+            currentFrameRun = 0;
+            framesRun = 10;
+
+
         }
 
         public void Update(GameTime gameTime)
@@ -83,6 +103,7 @@ namespace Late_To_Class
             KeyboardState kbState = Keyboard.GetState();
             position.X = pos.X;
             position.Y = pos.Y;
+            UpdateAnimation(gameTime);
             switch (pState)
             {
                 case playerStates.Run:
@@ -150,8 +171,6 @@ namespace Late_To_Class
                     //        pState = playerStates.Stand;
                     //}
 
-
-                    //THIS DOES NOT WORK PROPERLY YET
                     if (kbState.IsKeyDown(leftKey) && kbState.IsKeyDown(rightKey)) //if both keys are pressed
                     {
                         if (speed > 0)
@@ -183,12 +202,12 @@ namespace Late_To_Class
                     {
                         pos.X += speed;
                     }
-                        
+
                     else if (!dirRight)
                     {
                         pos.X -= speed;
                     }
-                        
+
                     break;
 
 
@@ -217,8 +236,8 @@ namespace Late_To_Class
                     {
                         pos.Y += (int)jumpHeight;
                         jumpHeight += 0.75;
-                        
-                        if(kbState.IsKeyUp(jumpKey))
+
+                        if (kbState.IsKeyUp(jumpKey))
                         {
                             jumpHeight += 0.75;
 
@@ -256,12 +275,12 @@ namespace Late_To_Class
                         {
                             pos.X += speed;
                         }
-                            
+
                         else if (!dirRight)
                         {
                             pos.X -= speed;
                         }
-                            
+
                         //if (kbState.IsKeyDown(leftKey))
                         //{
                         //    pos.X -= speed;
@@ -317,17 +336,73 @@ namespace Late_To_Class
                     }
 
                     break;
-
-
             }
-            //I don't think this is necessary
-            //prevState = pState; //this sets prevState to the state the player was in last frame (still technically this frame)
+
+            fpsRun = Math.Pow(speed * 3.5, 2.0); //this makes it so that when the player is just starting to run, his animation follows the speed and doesn't look too fast.
         }
 
         public void Draw(SpriteBatch playerSprite)
         {
-            playerSprite.Draw(tex, pos, Color.White);
+            
+            switch (pState)
+            {
+                case playerStates.Stand:
+                    DrawStand(playerSprite);
+                    break;
+                case playerStates.Run:
+                    DrawRun(playerSprite);
+                    break;
+                case playerStates.Jump:
+                    DrawJump(playerSprite);
+                    break;
+            }
+        }
 
+        public void DrawStand(SpriteBatch spriteBatch)
+        {
+            sourceRec = new Rectangle(0, 0, playerWidth, playerHeight);
+
+            if (dirRight)
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+            else
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+        }
+
+        public void DrawRun(SpriteBatch spriteBatch)
+        {
+            sourceRec = new Rectangle(currentFrameRun * playerWidth, playerHeight, playerWidth, playerHeight);
+
+            if (dirRight)
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+            else
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+        }
+
+        public void DrawJump(SpriteBatch spriteBatch)
+        {
+            sourceRec = new Rectangle(0, playerHeight * 2, playerWidth, playerHeight);
+
+            if (dirRight)
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+            else
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+        }
+
+        public void UpdateAnimation(GameTime gameTime)
+        {
+            timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timeCounter >= timePerFrame)
+            {
+                currentFrameRun++;
+
+                if (currentFrameRun == framesRun)
+                {
+                    currentFrameRun = 0;
+                }
+
+                timeCounter -= timePerFrame;
+            }
         }
 
     }

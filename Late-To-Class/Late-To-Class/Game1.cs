@@ -67,7 +67,7 @@ namespace Late_To_Class
 
             helpBackgroundTexture = Content.Load<Texture2D>("helpBack");
             helpForegroundTexture = Content.Load<Texture2D>("helpFront");
-            playerImage = Content.Load<Texture2D>("Kirby.png");
+            playerImage = Content.Load<Texture2D>("player.png");
             player.Tex = playerImage;
             
             helpScene = new HelpScene(this, helpBackgroundTexture);
