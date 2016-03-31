@@ -49,7 +49,7 @@ namespace Late_To_Class
         {
             player = new Player();
 
-            activeScene = Scene.Game;
+            activeScene = Scene.MainMenu;
             base.Initialize();
         }
 
@@ -60,17 +60,20 @@ namespace Late_To_Class
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+            //Main menu
             rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Tahoma_40");
             string[] menuItems = { "Start Game", "Help", "End Game" };
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            //help menu
             helpBackgroundTexture = Content.Load<Texture2D>("helpBack");
             helpForegroundTexture = Content.Load<Texture2D>("helpFront");
+
             playerImage = Content.Load<Texture2D>("player.png");
             player.Tex = playerImage;
             
+            //help menu
             helpScene = new HelpScene(this, helpBackgroundTexture);
             Components.Add(helpScene);
             backScene = helpBackgroundTexture;
@@ -161,19 +164,19 @@ namespace Late_To_Class
             {
                 case Scene.MainMenu:
                     //draws the main menu
-                   
-                    GraphicsDevice.Clear(Color.SlateGray);
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null); 
                     base.Draw(gameTime);
-                    
+                    spriteBatch.End();
                     break;
                 case Scene.Help:
-                    
+                    spriteBatch.Begin();
                     GraphicsDevice.Clear(Color.SlateGray);
                     spriteBatch.Draw(backScene, rec, Color.White);
-                    
+                    spriteBatch.End();
                     break;
                 case Scene.Game:
-                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
+                    spriteBatch.Begin();
                     GraphicsDevice.Clear(Color.SlateGray);
                     LevelBuilder.Instance.Draw(spriteBatch, screen, CameraOrigin);
                     spriteBatch.DrawString(font, cameraNotes, new Vector2(50, 50), Color.White);
