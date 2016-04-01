@@ -82,7 +82,7 @@ namespace Late_To_Class
             menuComponent = new MenuComponet(this, spriteBatch, font, menuItems);
             Components.Add(menuComponent);
 
-            //DO NOT FUCKING TOUCH
+            //DO NOT fluffING TOUCH
             testLevel = Content.Load<Texture2D>("tiles.png");
             LevelBuilder.Instance.LoadMap("Test.txt");
             LevelBuilder.Instance.TileMaker(testLevel);
@@ -179,7 +179,7 @@ namespace Late_To_Class
                     break;
                 case Scene.Game:
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
-                    GraphicsDevice.Clear(Color.SlateGray);
+                    GraphicsDevice.Clear(Color.IndianRed);
                     LevelBuilder.Instance.Draw(spriteBatch, screen, CameraOrigin);
                     spriteBatch.DrawString(font, cameraNotes, new Vector2(50, 50), Color.White);
                     player.Draw(spriteBatch);

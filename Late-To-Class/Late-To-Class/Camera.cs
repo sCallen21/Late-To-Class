@@ -32,7 +32,7 @@ namespace Late_To_Class
             cameraView = new Rectangle(0, 0, viewport.Width, viewport.Height);
         }
 
-        //fucks around with the camera position based on the player position and the size(in pixels) of the screen
+        //faffs around with the camera position based on the player position and the size(in pixels) of the screen
        public void Update(Vector2 position, int xOffset, int yOffset)
        {
            if (position.X < viewport.Width / 2) { centre.X = viewport.Width / 2; }
