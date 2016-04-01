@@ -19,7 +19,7 @@ namespace Late_To_Class
 
         private double airTime;
         private double jumpHeight;
-        private int gravity;
+        private int platformHeight;
         private int baseHeight;
 
         /// <summary>
@@ -45,7 +45,6 @@ namespace Late_To_Class
         double timeCounter; //counts ticks of the gametime
         int currentFrameRun; //current frame of the run animation
         int framesRun; //how many frames are in the run animation
-
 
         public Texture2D Tex
         {
@@ -94,6 +93,7 @@ namespace Late_To_Class
             timePerFrame = 1 / fpsRun;
             currentFrameRun = 0;
             framesRun = 10;
+
 
 
         }
@@ -246,12 +246,12 @@ namespace Late_To_Class
                         if (kbState.IsKeyDown(leftKey))
                         {
                             dirRight = false;
-                            pos.X -= 4;
+                            //pos.X -= 4;
                         }
                         else if (kbState.IsKeyDown(rightKey))
                         {
                             dirRight = true;
-                            pos.X += 4;
+                            //pos.X += 4;
                         }
 
                         //this decelerates the player while jumping
@@ -281,15 +281,6 @@ namespace Late_To_Class
                             pos.X -= speed;
                         }
 
-                        //if (kbState.IsKeyDown(leftKey))
-                        //{
-                        //    pos.X -= speed;
-                        //}
-                        //if (kbState.IsKeyDown(rightKey))
-                        //{
-                        //    pos.X += speed;
-                        //}
-
                         if (pos.Y >= baseHeight)
                         {
                             pos.Y = baseHeight;
@@ -303,6 +294,19 @@ namespace Late_To_Class
                             else
                             {
                                 pState = playerStates.Stand;
+                            }
+                        }
+
+                        else if(pos.Y < baseHeight)
+                        {
+                            foreach(Rectangle tile in LevelBuilder.Instance.collisionBoxes)
+                            {
+                                if (pos.Intersects(tile))
+                                {
+                                    platformHeight = tile.Top;
+                                    pos.Y = platformHeight;
+                                    jumping = false;
+                                }
                             }
                         }
                     }
@@ -334,6 +338,55 @@ namespace Late_To_Class
                         jumping = true;
                         jumpHeight = -20;
                     }
+
+                    /*if(pState == playerStates.Stand || pState == playerStates.Run || pState == playerStates.Jump) //Beginning of collision code
+                    {
+                        foreach(Rectangle tiles in LevelBuilder.Instance.collisionBoxes)
+                        {
+                            if (pos.Intersects(tiles))
+                            {
+                                if(pos.Y <= tiles.Top)
+                                {
+                                    platformHeight = tiles.Top;
+                                    pos.Y = platformHeight;
+                                }
+                                else if (pos.X <= tiles.Left)
+                                {
+                                    pos.X = tiles.Left;
+                                }
+                                else if (pos.X >= tiles.Right)
+                                {
+                                    pos.X = tiles.Right;
+                                }
+                            }
+                        }
+
+                        //OR
+
+                        /*for(int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
+                        {
+                            if (pos.Intersects(LevelBuilderInstance.collisionBoxes[i]))
+                            {
+                                if(pos.Y <= LevelBuilderInstance.collisionBoxes[i].Top)
+                                {
+                                    platformHeight = LevelBuilderInstance.collisionBoxes[i].Top;
+                                    pos.Y = platformHeight;
+                                }
+
+                                else
+                                {
+                                    if(dirRight == true)
+                                    {
+                                        pos.X = LevelBuilderInstance.collisionBoxes[i].Left;
+                                    }
+                                    else if (dirRight == false)
+                                    {
+                                        pos.X = LevelBuilderInstance.collisionBoxes[i].Right;
+                                    }
+                                }
+                            }
+                        }
+                    }*///End of collision code
 
                     break;
             }
