@@ -63,6 +63,9 @@ namespace Late_To_Class
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             //Main menu
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
+
             rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Tahoma_40");
@@ -142,6 +145,7 @@ namespace Late_To_Class
                         player.Update(gameTime);
                         camera.Update(player.position, LevelBuilder.Instance.MapSize.X * 32, LevelBuilder.Instance.MapSize.Y * 32);
                         CameraOrigin.X = camera.cameraView.X + player.speed;
+                        if (CameraOrigin.X < 0) { CameraOrigin.X = 0; }
                         CameraOrigin.Y = camera.cameraView.Y + player.speed;
                         cameraNotes = CameraOrigin.X.ToString() + ";" + CameraOrigin.Y.ToString();
 
