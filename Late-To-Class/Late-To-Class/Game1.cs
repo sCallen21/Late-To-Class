@@ -20,6 +20,7 @@ namespace Late_To_Class
         Texture2D helpBackgroundTexture;
         Texture2D helpForegroundTexture;
         HelpScene helpScene;
+        double timer = 25;
 
         //checks the users key presses 
         KeyboardState kbState, previousKbState;
@@ -143,12 +144,17 @@ namespace Late_To_Class
                         break;
                 case Scene.Game:
                         player.Update(gameTime);
+                        timer -= gameTime.ElapsedGameTime.TotalSeconds;
+                    
                         camera.Update(player.position, LevelBuilder.Instance.MapSize.X * 32, LevelBuilder.Instance.MapSize.Y * 32);
                         CameraOrigin.X = camera.cameraView.X + player.speed;
                         if (CameraOrigin.X < 0) { CameraOrigin.X = 0; }
                         CameraOrigin.Y = camera.cameraView.Y + player.speed;
                         cameraNotes = CameraOrigin.X.ToString() + ";" + CameraOrigin.Y.ToString();
-
+                    if(timer <= 0)
+                    {
+                        activeScene = Scene.Exit;
+                    }
                         
     
                     break;
@@ -185,7 +191,7 @@ namespace Late_To_Class
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
                     GraphicsDevice.Clear(Color.IndianRed);
                     LevelBuilder.Instance.Draw(spriteBatch, screen, CameraOrigin);
-                    spriteBatch.DrawString(font, cameraNotes, new Vector2(50, 50), Color.White);
+                    spriteBatch.DrawString(font, timer.ToString(), new Vector2(50, 50), Color.White);
                     player.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
