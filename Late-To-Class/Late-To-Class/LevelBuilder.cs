@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+//Chris Banks
 namespace Late_To_Class
 {
     /// <summary>
@@ -110,6 +111,7 @@ namespace Late_To_Class
                     int yPos = (tile - xPos) / tilesPerRow;
                     toDraw = new Rectangle(xPos * tileSize.X, yPos * tileSize.Y, tileSize.X, tileSize.Y);
                     Source[y, x] = toDraw;
+                    if(map[y, x] != -1)
                     collisionBoxes.Add(toDraw);
 
                 }
