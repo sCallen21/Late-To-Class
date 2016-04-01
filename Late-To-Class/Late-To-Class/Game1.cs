@@ -19,12 +19,13 @@ namespace Late_To_Class
         Texture2D helpBackgroundTexture;
         Texture2D helpForegroundTexture;
         HelpScene helpScene;
+
         //checks the users key presses 
         KeyboardState kbState, previousKbState;
         Texture2D backScene;
         SpriteFont font;
         Rectangle rec;
-        string cameraNotes = "fuck";
+        string cameraNotes = "Stephen";
 
         Texture2D testLevel;
         Texture2D playerImage;
@@ -49,7 +50,7 @@ namespace Late_To_Class
         {
             player = new Player();
 
-            activeScene = Scene.MainMenu;
+            activeScene = Scene.Game;
             base.Initialize();
         }
 
@@ -65,7 +66,7 @@ namespace Late_To_Class
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Tahoma_40");
             string[] menuItems = { "Start Game", "Help", "End Game" };
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            
             //help menu
             helpBackgroundTexture = Content.Load<Texture2D>("helpBack");
             helpForegroundTexture = Content.Load<Texture2D>("helpFront");
@@ -164,10 +165,10 @@ namespace Late_To_Class
             {
                 case Scene.MainMenu:
                     //draws the main menu
-                    GraphicsDevice.Clear(Color.CornflowerBlue);
-                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null); 
+                    GraphicsDevice.Clear(Color.SlateGray);
+                    //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null); 
                     base.Draw(gameTime);
-                    spriteBatch.End();
+                   // spriteBatch.End();
                     break;
                 case Scene.Help:
                     spriteBatch.Begin();
@@ -176,7 +177,7 @@ namespace Late_To_Class
                     spriteBatch.End();
                     break;
                 case Scene.Game:
-                    spriteBatch.Begin();
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
                     GraphicsDevice.Clear(Color.SlateGray);
                     LevelBuilder.Instance.Draw(spriteBatch, screen, CameraOrigin);
                     spriteBatch.DrawString(font, cameraNotes, new Vector2(50, 50), Color.White);
@@ -184,7 +185,7 @@ namespace Late_To_Class
                     spriteBatch.End();
                     break;
             }
-             spriteBatch.End();
+             //spriteBatch.End();
         }
 
         public bool SingleKeyPress(Keys k)
