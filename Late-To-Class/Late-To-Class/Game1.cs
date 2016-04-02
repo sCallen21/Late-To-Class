@@ -52,7 +52,7 @@ namespace Late_To_Class
         {
             player = new Player();
 
-            activeScene = Scene.Game;
+            activeScene = Scene.MainMenu;
             base.Initialize();
         }
 
@@ -64,6 +64,7 @@ namespace Late_To_Class
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             //Main menu
+
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
@@ -177,9 +178,9 @@ namespace Late_To_Class
                 case Scene.MainMenu:
                     //draws the main menu
                     GraphicsDevice.Clear(Color.SlateGray);
-                    //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null); 
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
                     base.Draw(gameTime);
-                   // spriteBatch.End();
+                    spriteBatch.End();
                     break;
                 case Scene.Help:
                     spriteBatch.Begin();
@@ -196,7 +197,8 @@ namespace Late_To_Class
                     spriteBatch.End();
                     break;
             }
-             //spriteBatch.End();
+
+            //spriteBatch.End();
         }
 
         public bool SingleKeyPress(Keys k)

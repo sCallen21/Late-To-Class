@@ -64,8 +64,8 @@ namespace Late_To_Class
             }
 
             position = new Vector2(
-                (Game.Window.ClientBounds.Width - width) / 2,
-                (Game.Window.ClientBounds.Height - height) / 2);
+                250,
+                150 );
         }
 
         public override void Initialize()
