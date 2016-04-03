@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Late_To_Class
 {
-    class MenuComponet:DrawableGameComponent
+    class MenuComponent:DrawableGameComponent
     {
         string[] menuItems;
         int selectedIndex;
@@ -39,7 +39,7 @@ namespace Late_To_Class
             }
         }
 
-        public MenuComponet(Game game,
+        public MenuComponent(Game game,
             SpriteBatch spriteBatch,
             SpriteFont spriteFont,
             string[] menuItems)

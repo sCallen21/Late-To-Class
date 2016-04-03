@@ -21,8 +21,7 @@ namespace Late_To_Class
         public Keys moveRight = Keys.D;
         public Keys powerUpKey = Keys.J;
         Keys[] conflicting = new Keys[5];
-
-        private GameControls() { }
+                
 
         /// <summary>
         /// Creates and returns a single instance of the GameControls class
@@ -31,11 +30,11 @@ namespace Late_To_Class
         {
             get
             {
-                if (instance == null)
-                    instance = new GameControls();
+                if (instance == null) { instance = new GameControls(); }
                 return instance;
             }
         }
+        
 
         /// <summary>
         /// Loads in the saved control scheme from a file
@@ -50,9 +49,8 @@ namespace Late_To_Class
                 {
                     string[] data = line.Split(';');
                     int[] keyBind = new int[5];
-                    
 
-                    for(int i = 0; i < 5; i++)
+                    for (int i = 0; i < 5; i++)
                     {
                         keyBind[i] = int.Parse(data[i]);
                     }
@@ -69,18 +67,19 @@ namespace Late_To_Class
                     conflicting[4] = powerUpKey;
 
                 }
-                if(input != null)
+
+                if (input != null)
                 {
                     input.Close();
                 }
                 SaveControls();
-                
-                
             }
+
             catch
             {
 
             }
+
             finally
             {
                 if (input != null)
@@ -89,6 +88,7 @@ namespace Late_To_Class
                 }
             }
         }
+
 
         /// <summary>
         /// Saves the key configurations as their integer values
@@ -116,6 +116,7 @@ namespace Late_To_Class
                 }
             }
         }
+
 
         /// <summary>
         /// used with the control scheme option to enable player defined controls

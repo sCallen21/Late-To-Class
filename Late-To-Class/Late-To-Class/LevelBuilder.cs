@@ -28,8 +28,6 @@ namespace Late_To_Class
         public List<Rectangle> collisionBoxes;
 
 
-        private LevelBuilder() { }
-
         /// <summary>
         /// Creates and returns a single instance of the LevelBuilder class
         /// </summary>

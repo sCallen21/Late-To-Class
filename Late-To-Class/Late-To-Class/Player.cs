@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Content;
 //Steve Callen
 namespace Late_To_Class
 {
-    class Player
+    public class Player
     {
         private Rectangle pos;
         private Texture2D tex;
@@ -73,6 +73,7 @@ namespace Late_To_Class
 
         public Player()
         {
+            
             pState = playerStates.Stand;
             dirRight = true;
             pos = new Rectangle(200, 300, 66, 66);
@@ -105,6 +106,11 @@ namespace Late_To_Class
 
 
 
+        }
+
+        public void Load(ContentManager Content)
+        {
+            tex = Content.Load<Texture2D>("player");
         }
 
         public void Update(GameTime gameTime)

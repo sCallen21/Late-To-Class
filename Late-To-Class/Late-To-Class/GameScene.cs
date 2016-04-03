@@ -13,16 +13,16 @@ namespace Late_To_Class
 {
     class GameScene: DrawableGameComponent
     {
-        private List<GameComponent> componets;
+        private List<GameComponent> components;
 
-        public List<GameComponent> getComponet
+        public List<GameComponent> getComponent
         {
-            get { return componets; }
+            get { return components; }
         }
 
         public GameScene(Game game) : base(game)
         {
-            componets = new List<GameComponent>();
+            components = new List<GameComponent>();
             Visible = false;
             Enabled = false;
 
@@ -42,7 +42,7 @@ namespace Late_To_Class
 
         public override void Update(GameTime gameTime)
         {
-            foreach (GameComponent gc in componets) {
+            foreach (GameComponent gc in components) {
                 if (gc.Enabled)
                 {
                     gc.Update(gameTime);
@@ -53,7 +53,7 @@ namespace Late_To_Class
         }
         public override void Draw(GameTime gameTime)
         {
-            foreach (GameComponent gc in componets)
+            foreach (GameComponent gc in components)
             {
                 if (gc is DrawableGameComponent && ((DrawableGameComponent)gc).Visible)
                 {

@@ -44,8 +44,8 @@
     <Compile Include="HelpScene.cs" />
     <Compile Include="ImageComponet.cs" />
     <Compile Include="LevelBuilder.cs" />
+    <Compile Include="LevelManager.cs" />
     <Compile Include="MenuComponet.cs" />
-    <Compile Include="PlayAbleGame.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="GameControls.cs" />
     <Compile Include="Program.cs" />
@@ -68,10 +68,6 @@
     </Content>
     <Content Include="Content\helpFront.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Kirby.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\player.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
