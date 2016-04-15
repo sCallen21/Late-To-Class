@@ -95,7 +95,7 @@ namespace Late_To_Class
             powerUpKey = GameControls.Instance.powerUpKey;
 
             //animation stuff
-            fpsRun = Math.Pow(speed * 3.5, 2.0);
+            fpsRun = Math.Pow(speed, 5.0);
             fpsJump = 5;
             timePerFrameRun = 1 / fpsRun;
             timePerFrameJump = 1 / fpsJump;
@@ -409,7 +409,8 @@ namespace Late_To_Class
                     break;
             }
 
-            fpsRun = Math.Pow(speed * 3.5, 2.0); //this makes it so that when the player is just starting to run, his animation follows the speed and doesn't look too fast.
+            fpsRun = speed * 1.8;
+            timePerFrameRun = 1 / fpsRun; //this makes it so that when the player is just starting to run, his animation follows the speed and doesn't look too fast.
         }
 
         public void Draw(SpriteBatch playerSprite)
