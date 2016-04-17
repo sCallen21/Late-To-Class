@@ -10,31 +10,27 @@ namespace Late_To_Class
     /// </summary>
     public class Game1 : Game
     {
-
+        //Base Game Types
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        MenuComponet menuComponent;
-        //enum for FNS machine 
-        Scene activeScene;
-        //helpscene 
-        Texture2D helpBackgroundTexture;
-        Texture2D helpForegroundTexture;
-        HelpScene helpScene;
-
-        //checks the users key presses 
-        KeyboardState kbState, previousKbState;
-        Texture2D backScene;
         SpriteFont font;
+
+        //Menu State items
+        MenuComponent menuComponent;
+        Scene activeScene;
+        
+        //helpscene 
+        HelpScene helpScene;
+        Texture2D helpForegroundTexture;
+        Texture2D backScene;
+               
+        KeyboardState kbState, previousKbState;
         Rectangle rec;
-        string cameraNotes = "Stephen";
-
-        Texture2D testLevel;
-        Texture2D playerImage;
+        
+        //level details
         Player player;
-        Camera camera;
         Point screen;
-        Point CameraOrigin;
-
+       
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -50,8 +46,8 @@ namespace Late_To_Class
         protected override void Initialize()
         {
             player = new Player();
+            activeScene = Scene.MainMenu;
 
-            activeScene = Scene.Game;
             base.Initialize();
         }
 
@@ -61,38 +57,32 @@ namespace Late_To_Class
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            //Main menu
+
+            //Full Game Content - This section is for content the entire game needs
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
-
             rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Tahoma_40");
-            string[] menuItems = { "Start Game", "Help", "End Game" };
-            
-            //help menu
-            helpBackgroundTexture = Content.Load<Texture2D>("helpBack");
-            helpForegroundTexture = Content.Load<Texture2D>("helpFront");
-
-            playerImage = Content.Load<Texture2D>("player.png");
-            player.Tex = playerImage;
-            
-            //help menu
-            helpScene = new HelpScene(this, helpBackgroundTexture);
-            Components.Add(helpScene);
-            backScene = helpBackgroundTexture;
-            menuComponent = new MenuComponet(this, spriteBatch, font, menuItems);
-            Components.Add(menuComponent);
-
-            //DO NOT fluffING TOUCH
-            testLevel = Content.Load<Texture2D>("tiles.png");
-            LevelBuilder.Instance.LoadMap("Test.txt");
-            LevelBuilder.Instance.TileMaker(testLevel);
-            camera = new Camera(GraphicsDevice.Viewport);
             screen.X = GraphicsDevice.Viewport.Width;
             screen.Y = GraphicsDevice.Viewport.Height;
+            player.Load(Content);
 
+
+            //help menu - TODO - replace with options menu
+            backScene = Content.Load<Texture2D>("helpBack");
+            helpForegroundTexture = Content.Load<Texture2D>("helpFront");
+            helpScene = new HelpScene(this, backScene);
+            Components.Add(helpScene);
+            
+            //Main Menu
+            string[] menuItems = { "Start Game", "Options", "End Game" };
+            menuComponent = new MenuComponent(this, spriteBatch, font, menuItems);
+            Components.Add(menuComponent);
+            
+
+            //Game
+            LevelManager.Instance.LoadLevel("Test.txt", Content, GraphicsDevice.Viewport, player);
         }
 
         /// <summary>
@@ -101,7 +91,7 @@ namespace Late_To_Class
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            
         }
 
         /// <summary>
@@ -111,10 +101,7 @@ namespace Late_To_Class
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
 
-            // TODO: Add your update logic here
             switch (activeScene)
             {
                 case Scene.MainMenu:
@@ -123,35 +110,31 @@ namespace Late_To_Class
                         switch (menuComponent.SelectedIndex)
                         {
                             case 0:
+                                LevelManager.Instance.LoadLevel("Test.txt", Content, GraphicsDevice.Viewport, player);
                                 activeScene = Scene.Game;
                                 break;
                             case 1:
-                                activeScene = Scene.Help;
+                                activeScene = Scene.Options;
                                 break;
                             case 2:
                                 activeScene = Scene.Exit;
                                 break;
                         }
-                        
                     }
+
                     break;
-                case Scene.Help:
-                    if (SingleKeyPress(Keys.Back))
+                case Scene.Options:
+                    if (SingleKeyPress(Keys.Escape))
                     {
                         activeScene = Scene.MainMenu;
                     }
-                        break;
-                case Scene.Game:
-                        player.Update(gameTime);
-                        camera.Update(player.position, LevelBuilder.Instance.MapSize.X * 32, LevelBuilder.Instance.MapSize.Y * 32);
-                        CameraOrigin.X = camera.cameraView.X + player.speed;
-                        if (CameraOrigin.X < 0) { CameraOrigin.X = 0; }
-                        CameraOrigin.Y = camera.cameraView.Y + player.speed;
-                        cameraNotes = CameraOrigin.X.ToString() + ";" + CameraOrigin.Y.ToString();
-
-                        
-    
                     break;
+
+                case Scene.Game:
+                    LevelManager.Instance.UpdateLevel(gameTime);
+                    if (LevelManager.Instance.Late()) { activeScene = Scene.MainMenu; }
+                    break;
+
                 case Scene.Exit:
                     Exit();
                     break;
@@ -165,33 +148,29 @@ namespace Late_To_Class
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            
-             switch (activeScene)
+
+            switch (activeScene)
             {
                 case Scene.MainMenu:
-                    //draws the main menu
                     GraphicsDevice.Clear(Color.SlateGray);
-                    //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null); 
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
                     base.Draw(gameTime);
-                   // spriteBatch.End();
+                    spriteBatch.End();
                     break;
-                case Scene.Help:
+                case Scene.Options:
                     spriteBatch.Begin();
                     GraphicsDevice.Clear(Color.SlateGray);
                     spriteBatch.Draw(backScene, rec, Color.White);
                     spriteBatch.End();
                     break;
                 case Scene.Game:
-                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
                     GraphicsDevice.Clear(Color.IndianRed);
-                    LevelBuilder.Instance.Draw(spriteBatch, screen, CameraOrigin);
-                    spriteBatch.DrawString(font, cameraNotes, new Vector2(50, 50), Color.White);
-                    player.Draw(spriteBatch);
-                    spriteBatch.End();
+                    LevelManager.Instance.DrawLevel(spriteBatch, screen, font);
                     break;
+
             }
-             //spriteBatch.End();
         }
+            
 
         public bool SingleKeyPress(Keys k)
         {

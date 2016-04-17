@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 /// </summary>
 namespace Late_To_Class
 {
-    class ImageComponet:DrawableGameComponent
+    class ImageComponent:DrawableGameComponent
     {
         public enum DrawMode
         {
@@ -23,7 +23,7 @@ namespace Late_To_Class
         private SpriteBatch spriteBatch = null;
         private Rectangle imageRect;
 
-        public ImageComponet(Game game, Texture2D texture, DrawMode drawMode) : base(game)
+        public ImageComponent(Game game, Texture2D texture, DrawMode drawMode) : base(game)
         {
             this.texture = texture;
             this.drawMode = drawMode;

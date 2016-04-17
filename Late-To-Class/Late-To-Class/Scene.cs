@@ -7,6 +7,6 @@ namespace Late_To_Class
 {
     enum Scene
     {
-        Game,MainMenu,Help,Exit
+        Game,MainMenu,Options,Exit,Paused
     }
 }

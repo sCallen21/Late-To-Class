@@ -12,8 +12,8 @@ namespace Late_To_Class
     {
         public HelpScene(Game game, Texture2D textureBack) : base(game)
         {
-            getComponet.Add(new ImageComponet(game, textureBack, ImageComponet.DrawMode.Stretch));
-           // getComponet.Add(new ImageComponet(game, textureFront, ImageComponet.DrawMode.Center));
+            getComponent.Add(new ImageComponent(game, textureBack, ImageComponent.DrawMode.Stretch));
+           // getComponent.Add(new ImageComponet(game, textureFront, ImageComponet.DrawMode.Center));
             
         }
 
