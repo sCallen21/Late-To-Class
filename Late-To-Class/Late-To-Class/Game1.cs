@@ -26,6 +26,19 @@ namespace Late_To_Class
                
         KeyboardState kbState, previousKbState;
         Rectangle rec;
+
+        //pause
+        Texture2D pausedTex;
+        Rectangle pausedRec;
+        Button btnPlay, btnQuit;
+        Texture2D playTex;
+        Texture2D quitTex;
+
+        //death
+        Texture2D deathTex;
+        Rectangle deathRec;
+
+        
         
         //level details
         Player player;
@@ -47,6 +60,7 @@ namespace Late_To_Class
         {
             player = new Player();
             activeScene = Scene.MainMenu;
+            IsMouseVisible = true;
 
             base.Initialize();
         }
@@ -59,8 +73,8 @@ namespace Late_To_Class
         {
 
             //Full Game Content - This section is for content the entire game needs
-            graphics.IsFullScreen = true;
-            graphics.ApplyChanges();
+            //graphics.IsFullScreen = true;
+            //graphics.ApplyChanges();
             rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Tahoma_40");
@@ -79,7 +93,24 @@ namespace Late_To_Class
             string[] menuItems = { "Start Game", "Options", "End Game" };
             menuComponent = new MenuComponent(this, spriteBatch, font, menuItems);
             Components.Add(menuComponent);
-            
+
+            //pause 
+            pausedTex = Content.Load<Texture2D>("Pause.png");
+            pausedRec = new Rectangle(100, 0, pausedTex.Width, pausedTex.Height);
+            btnPlay = new Button();
+            btnQuit = new Button();
+            playTex = Content.Load<Texture2D>("Quit.jpg");
+            btnPlay.load(playTex, new Vector2(350, 225));
+            quitTex = Content.Load<Texture2D>("Play.jpg");
+            btnQuit.load(quitTex, new Vector2(350, 275));
+
+            //death
+            deathTex = Content.Load<Texture2D>("Death.png");
+            deathRec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+
+
+
+
 
             //Game
             LevelManager.Instance.LoadLevel("Test.txt", Content, GraphicsDevice.Viewport, player);
@@ -101,6 +132,7 @@ namespace Late_To_Class
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            MouseState mouse = Mouse.GetState();
 
             switch (activeScene)
             {
@@ -132,7 +164,41 @@ namespace Late_To_Class
 
                 case Scene.Game:
                     LevelManager.Instance.UpdateLevel(gameTime);
-                    if (LevelManager.Instance.Late()) { activeScene = Scene.MainMenu; }
+                    if (LevelManager.Instance.Late()) { activeScene = Scene.Death; }
+
+
+                    //pause 
+                    btnPlay.isClicked = false;
+                    btnQuit.isClicked = false;
+                    if (SingleKeyPress(Keys.P))
+                    {
+                        activeScene = Scene.Paused;
+                    }
+
+                    break;
+
+                case Scene.Paused:
+                    if (SingleKeyPress(Keys.P))
+                    {
+                        activeScene = Scene.Game;
+                    }
+                    if (btnPlay.isClicked)
+                    {
+                        activeScene = Scene.Game;
+                    }
+                    if (btnQuit.isClicked)
+                    {
+                        activeScene = Scene.MainMenu;
+                    }
+                    btnPlay.Update(mouse);
+                    btnQuit.Update(mouse);
+                    break;
+                case Scene.Death:
+                    if (btnQuit.isClicked)
+                    {
+                        activeScene = Scene.MainMenu;
+                    }
+                    btnQuit.Update(mouse);
                     break;
 
                 case Scene.Exit:
@@ -166,6 +232,19 @@ namespace Late_To_Class
                 case Scene.Game:
                     GraphicsDevice.Clear(Color.IndianRed);
                     LevelManager.Instance.DrawLevel(spriteBatch, screen, font);
+                    break;
+                case Scene.Paused:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(pausedTex, pausedRec, Color.White);
+                    btnPlay.Draw(spriteBatch);
+                    btnQuit.Draw(spriteBatch);
+                    spriteBatch.End();
+                    break;
+                case Scene.Death:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(deathTex, deathRec, Color.White);
+                    btnQuit.Draw(spriteBatch);
+                    spriteBatch.End();
                     break;
 
             }
