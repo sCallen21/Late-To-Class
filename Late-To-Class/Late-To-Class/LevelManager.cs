@@ -42,9 +42,24 @@ namespace Late_To_Class
         {
             tileSheet = Content.Load<Texture2D>("tiles");
             LevelBuilder.Instance.LoadMap(level);
+            LevelBuilder.Instance.LoadSpawns(level + "Spawns");
             LevelBuilder.Instance.TileMaker(tileSheet);
+            LevelBuilder.Instance.SpawnMaker();
             camera = new Camera(newViewport);
             this.player = player;
+            player.position = new Vector2(LevelBuilder.Instance.PlayerPosition.X, LevelBuilder.Instance.PlayerPosition.Y);
+            foreach(Point cluster in LevelBuilder.Instance.NPCSpawnPositions)
+            {
+                //npcBuilder.CreateSpawn(cluster);
+            }
+            foreach(Point guard in LevelBuilder.Instance.EnemySpawnPositions)
+            {
+                //CampoBuilder.CreateSpawn(guard);
+            }
+            foreach(Point powerUp in LevelBuilder.Instance.PowerUpPositions)
+            {
+                //Powers.CreateSpawn(powerUp);
+            }
             dTimer = (LevelBuilder.Instance.MapSize.X * LevelBuilder.Instance.MapSize.Y) / difficulty * (1 / 1); //replace 1/1 with 1/level once multiple levels exist
         }
 
