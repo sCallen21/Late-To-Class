@@ -152,13 +152,15 @@ namespace Late_To_Class
                             break; //Null Space Case
                         case 0: collisionBoxes.Add(new Rectangle(x * tileSize.X, y * tileSize.Y, tileSize.X, tileSize.Y));
                             break; // Collision Case
-                        case 1:  PlayerPosition = new Point(x * tileSize.X, y * tileSize.Y);
+                        case 1: collisionBoxes.Add(new Rectangle(x * tileSize.X, y * tileSize.Y, tileSize.X, tileSize.Y));
+                            break; // Displaced Collision Case
+                        case 2:  PlayerPosition = new Point(x * tileSize.X, y * tileSize.Y);
                             break;//Player Spawn Location
-                        case 2:  NPCSpawnPositions.Add(new Point((x * tileSize.X), (tileSize.Y * y)));
+                        case 3:  NPCSpawnPositions.Add(new Point((x * tileSize.X), (tileSize.Y * y)));
                             break; //NPC Spawn Locations
-                        case 3: EnemySpawnPositions.Add(new Point((x * tileSize.X), (tileSize.Y * y)));
+                        case 4: EnemySpawnPositions.Add(new Point((x * tileSize.X), (tileSize.Y * y)));
                             break; //Enemy Spawn Locations
-                        case 4:  GoalPosition = new Point(x * tileSize.X, y * tileSize.Y);
+                        case 5:  GoalPosition = new Point(x * tileSize.X, y * tileSize.Y);
                             break;
                         default: 
                             break;
