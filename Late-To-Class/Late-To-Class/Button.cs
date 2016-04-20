@@ -19,6 +19,12 @@ namespace Late_To_Class
         bool down;
         public bool isClicked;
 
+        public Color Color
+        {
+            get { return color; }
+            set { color = value; }
+        }
+
         public bool IsClicked {
             get { return isClicked; }
             set { isClicked = value; }

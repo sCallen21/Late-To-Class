@@ -38,8 +38,14 @@ namespace Late_To_Class
         Texture2D deathTex;
         Rectangle deathRec;
 
-        
-        
+        //mouse
+        MouseState mouse = Mouse.GetState();
+        static public Vector2 pos;
+        static private Texture2D tex;
+        static public MouseState mouseState;
+        static public MouseState previousState;
+
+
         //level details
         Player player;
         Point screen;
@@ -60,8 +66,10 @@ namespace Late_To_Class
         {
             player = new Player();
             activeScene = Scene.MainMenu;
-            IsMouseVisible = true;
+ 
 
+            //mouse 
+            Mouse.WindowHandle = Window.Handle;
             base.Initialize();
         }
 
@@ -71,10 +79,10 @@ namespace Late_To_Class
         /// </summary>
         protected override void LoadContent()
         {
-
             //Full Game Content - This section is for content the entire game needs
-            //graphics.IsFullScreen = true;
-            //graphics.ApplyChanges();
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
+            
             rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Tahoma_40");
@@ -108,7 +116,7 @@ namespace Late_To_Class
             deathTex = Content.Load<Texture2D>("Death.png");
             deathRec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
-
+            tex = Content.Load<Texture2D>("Mouse.PNG");
 
 
 
@@ -132,7 +140,10 @@ namespace Late_To_Class
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            MouseState mouse = Mouse.GetState();
+            previousState = mouseState;
+            mouseState = Mouse.GetState(); //Needed to find the most current mouse states.
+            pos.X = mouseState.X; //Change x pos to mouseX
+            pos.Y = mouseState.Y; //Change y pos to mouseY
 
             switch (activeScene)
             {
@@ -168,6 +179,8 @@ namespace Late_To_Class
 
 
                     //pause 
+                    btnPlay.Color = new Color(255, 255, 255, 255);
+                    btnQuit.Color = new Color(255, 255, 255, 255);
                     btnPlay.isClicked = false;
                     btnQuit.isClicked = false;
                     if (SingleKeyPress(Keys.P))
@@ -234,15 +247,21 @@ namespace Late_To_Class
                     LevelManager.Instance.DrawLevel(spriteBatch, screen, font);
                     break;
                 case Scene.Paused:
+                    GraphicsDevice.Clear(Color.SlateGray);
                     spriteBatch.Begin();
                     spriteBatch.Draw(pausedTex, pausedRec, Color.White);
                     btnPlay.Draw(spriteBatch);
                     btnQuit.Draw(spriteBatch);
+                    //mouse debug
+                    spriteBatch.Draw(tex, pos, Color.White);
+                    spriteBatch.DrawString(font, pos.ToString(), (new Vector2(10, 10)), Color.White);
                     spriteBatch.End();
                     break;
                 case Scene.Death:
+                    GraphicsDevice.Clear(Color.SlateGray);
                     spriteBatch.Begin();
                     spriteBatch.Draw(deathTex, deathRec, Color.White);
+                    spriteBatch.Draw(tex, pos, Color.White);
                     btnQuit.Draw(spriteBatch);
                     spriteBatch.End();
                     break;
