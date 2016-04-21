@@ -80,6 +80,7 @@ namespace Late_To_Class
         protected override void LoadContent()
         {
             //Full Game Content - This section is for content the entire game needs
+
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
             

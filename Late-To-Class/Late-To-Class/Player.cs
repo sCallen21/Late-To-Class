@@ -61,7 +61,9 @@ namespace Late_To_Class
         {
             Run,
             Jump,
-            Stand
+            Stand,
+            Duck,
+            Slide
         }
 
         playerStates pState;
@@ -181,7 +183,7 @@ namespace Late_To_Class
 
                     //        accTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-                    //    }
+                    //    }5
                     //    else
                     //        pState = playerStates.Stand;
                     //}
@@ -210,6 +212,10 @@ namespace Late_To_Class
                     if (kbState.IsKeyDown(jumpKey))
                     {
                         pState = playerStates.Jump;
+                    }
+                    if(kbState.IsKeyDown(duckKey))
+                    {
+                        pState = playerStates.Slide;
                     }
 
                     //this checks to see what direction the player is moving, and then adds the speed accordingly
@@ -244,6 +250,10 @@ namespace Late_To_Class
                     {
                         pState = playerStates.Jump;
                     }
+                    if(kbState.IsKeyDown(duckKey))
+                    {
+                        pState = playerStates.Duck;
+                    }
                     break;
 
                 case playerStates.Jump: //http://flatformer.blogspot.com/2010/02/making-character-jump-in-xnac-basic.html
@@ -251,23 +261,22 @@ namespace Late_To_Class
                     if (jumping == true)
                     {
                         pos.Y += (int)jumpHeight;
-                        jumpHeight += 0.75;
+                        jumpHeight += 0.85f;
 
                         if (kbState.IsKeyUp(jumpKey))
                         {
-                            jumpHeight += 0.75;
-
+                            jumpHeight += 0.85f;
                         }
 
                         if (kbState.IsKeyDown(leftKey))
                         {
                             dirRight = false;
-                            //pos.X -= 4;
+                            pos.X -= 6;
                         }
                         else if (kbState.IsKeyDown(rightKey))
                         {
                             dirRight = true;
-                            //pos.X += 4;
+                            pos.X += 6;
                         }
 
                         //this decelerates the player while jumping
@@ -354,7 +363,7 @@ namespace Late_To_Class
                     else
                     {
                         jumping = true;
-                        jumpHeight = -20;
+                        jumpHeight = -22;
                     }
 
                     /*if(pState == playerStates.Stand || pState == playerStates.Run || pState == playerStates.Jump) //Beginning of collision code
@@ -407,6 +416,51 @@ namespace Late_To_Class
                     }*///End of collision code
 
                     break;
+
+                case playerStates.Duck:
+                    if(kbState.IsKeyUp(duckKey))
+                    {
+                        pState = playerStates.Stand;
+                    }
+                    if(kbState.IsKeyDown(jumpKey))
+                    {
+                        // after collision is implemented, some code will go here for the player jumping down off a platform
+                    }
+                    break;
+
+                case playerStates.Slide:
+                    if(kbState.IsKeyUp(duckKey))
+                    {
+                        pState = playerStates.Run;
+                    }
+                    else if (speed > 0)
+                    {
+                        if (accTimer >= timeToNextDec)
+                        {
+                            speed--;
+                            accTimer = 0;
+                        }
+
+                        accTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+                        if (dirRight)
+                        {
+                            pos.X += speed;
+                        }
+
+                        else if (!dirRight)
+                        {
+                            pos.X -= speed;
+                        }
+
+                    }
+                    
+                    else
+                    {
+                        pState = playerStates.Duck;
+                    }
+                    break;
+                        
             }
 
             fpsRun = speed * 1.8;
@@ -427,6 +481,13 @@ namespace Late_To_Class
                 case playerStates.Jump:
                     DrawJump(playerSprite);
                     break;
+                case playerStates.Duck:
+                    DrawDuck(playerSprite);
+                    break;
+                case playerStates.Slide:
+                    DrawSlide(playerSprite);
+                    break;
+                    
             }
         }
 
@@ -453,6 +514,24 @@ namespace Late_To_Class
         public void DrawJump(SpriteBatch spriteBatch)
         {
             sourceRec = new Rectangle(currentFrameJump * playerWidth, playerHeight * 2, playerWidth, playerHeight);
+
+            if (dirRight)
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+            else
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+        }
+        public void DrawDuck(SpriteBatch spriteBatch)
+        {
+            sourceRec = new Rectangle(0, 0, playerWidth, playerHeight/2);
+
+            if (dirRight)
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+            else
+                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+        }
+        public void DrawSlide(SpriteBatch spriteBatch)
+        {
+            sourceRec = new Rectangle(0, 0, playerWidth, playerHeight);
 
             if (dirRight)
                 spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
