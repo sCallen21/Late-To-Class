@@ -41,15 +41,8 @@ namespace Late_To_Class
 
         //these variables handle animation of the player
         Rectangle sourceRec; //this rectangle defines the portion of the texture it should grab.
-        double fpsRun; //how many frames of the run animation play per second
-        double fpsJump;
-        double timePerFrameRun; //how much time per frame (1/fpsRun)
-        double timePerFrameJump;
+        Dictionary<string, AnimationHelper> allAnims; //holds all animationhelpers for player
         double timeCounter; //counts ticks of the gametime
-        int currentFrameRun;
-        int currentFrameJump;
-        int framesRun; //how many frames are in the run animation
-        int framesJump; //how many frames are in the jump animation
 
         public Texture2D Tex
         {
@@ -97,17 +90,9 @@ namespace Late_To_Class
             powerUpKey = GameControls.Instance.powerUpKey;
 
             //animation stuff
-            fpsRun = Math.Pow(speed, 5.0);
-            fpsJump = 5;
-            timePerFrameRun = 1 / fpsRun;
-            timePerFrameJump = 1 / fpsJump;
-            currentFrameRun = 0;
-            currentFrameJump = 0;
-            framesRun = 10;
-            framesJump = 4;
-
-
-
+            allAnims = new Dictionary<string, AnimationHelper>();
+            allAnims.Add("run", new AnimationHelper(5, 10));
+            allAnims.Add("jump", new AnimationHelper(12, 10));
         }
 
         public void Load(ContentManager Content)
@@ -142,8 +127,7 @@ namespace Late_To_Class
             switch (pState)
             {
                 case playerStates.Run:
-                    UpdateRunAnimation(gameTime);
-
+                    UpdateAnimation(gameTime, allAnims["run"]);
                     if (kbState.IsKeyDown(leftKey) && (dirRight == true || dirRight == false)) //running left
                     {
                         dirRight = false;
@@ -280,7 +264,7 @@ namespace Late_To_Class
                     break;
 
                 case playerStates.Jump: //http://flatformer.blogspot.com/2010/02/making-character-jump-in-xnac-basic.html
-                    UpdateJumpAnimation(gameTime);
+                    UpdateAnimation(gameTime, allAnims["jump"]);
                     if (jumping == true)
                     {
                         jumpHeight = -20;
@@ -335,12 +319,12 @@ namespace Late_To_Class
                             //this determines if the player had any speed during the jump, and if so to put them back in the running state as opposed to the standing state
                             if (speed > 0)
                             {
-                                currentFrameJump = 0; //resets jump animation
+                                allAnims["jump"].CurrentFrame = 0; //resets jump animation
                                 pState = playerStates.Run;
                             }
                             else
                             {
-                                currentFrameJump = 0; //resets jump animation
+                                allAnims["jump"].CurrentFrame = 0; //resets jump animation
                                 pState = playerStates.Stand;
                             }
                         }
@@ -397,8 +381,8 @@ namespace Late_To_Class
                         
             }
 
-            fpsRun = speed * 1.8;
-            timePerFrameRun = 1 / fpsRun; //this makes it so that when the player is just starting to run, his animation follows the speed and doesn't look too fast.
+            allAnims["run"].FPS = (speed + 1) * 1.8;
+            allAnims["run"].UpdateSPF(); //this makes it so that when the player is just starting to run, his animation follows the speed and doesn't look too fast.
         }
 
         public void Draw(SpriteBatch playerSprite)
@@ -437,7 +421,7 @@ namespace Late_To_Class
 
         public void DrawRun(SpriteBatch spriteBatch)
         {
-            sourceRec = new Rectangle(currentFrameRun * playerWidth, playerHeight, playerWidth, playerHeight);
+            sourceRec = new Rectangle(allAnims["run"].CurrentFrame * playerWidth, playerHeight, playerWidth, playerHeight);
 
             if (dirRight)
                 spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
@@ -447,7 +431,7 @@ namespace Late_To_Class
 
         public void DrawJump(SpriteBatch spriteBatch)
         {
-            sourceRec = new Rectangle(currentFrameJump * playerWidth, playerHeight * 2, playerWidth, playerHeight);
+            sourceRec = new Rectangle(allAnims["jump"].CurrentFrame * playerWidth, playerHeight * 2, playerWidth, playerHeight);
 
             if (dirRight)
                 spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
@@ -456,7 +440,7 @@ namespace Late_To_Class
         }
         public void DrawDuck(SpriteBatch spriteBatch)
         {
-            sourceRec = new Rectangle(0, 0, playerWidth, playerHeight/2);
+            sourceRec = new Rectangle(0, playerHeight * 3, playerWidth, playerHeight);
 
             if (dirRight)
                 spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
@@ -465,7 +449,7 @@ namespace Late_To_Class
         }
         public void DrawSlide(SpriteBatch spriteBatch)
         {
-            sourceRec = new Rectangle(0, 0, playerWidth, playerHeight);
+            sourceRec = new Rectangle(0, playerHeight * 4, playerWidth, playerHeight);
 
             if (dirRight)
                 spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
@@ -473,35 +457,22 @@ namespace Late_To_Class
                 spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
         }
 
-        public void UpdateRunAnimation(GameTime gameTime)
+        public void UpdateAnimation(GameTime gameTime, AnimationHelper ah)
         {
             timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (timeCounter >= timePerFrameRun)
+            if (timeCounter >= ah.SPF)
             {
-                currentFrameRun++;
+                ah.CurrentFrame ++;
 
-                if (currentFrameRun >= framesRun)
+                if (ah.CurrentFrame >= ah.TotalFrames)
                 {
-                    currentFrameRun = 0;
+                    ah.CurrentFrame = 0;
                 }
 
-                timeCounter -= timePerFrameRun;
+                timeCounter -= ah.SPF;
             }
         }
-
-        public void UpdateJumpAnimation(GameTime gameTime)
-        {
-            timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (timeCounter >= timePerFrameJump)
-            {
-                if(currentFrameJump < framesJump - 1)
-                    currentFrameJump++;
-                timeCounter -= timePerFrameJump;
-            }
-        }
-
     }
 }
 

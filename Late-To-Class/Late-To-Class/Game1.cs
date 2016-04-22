@@ -242,7 +242,7 @@ namespace Late_To_Class
                     spriteBatch.End();
                     break;
                 case Scene.Game:
-                    GraphicsDevice.Clear(Color.IndianRed);
+                    GraphicsDevice.Clear(Color.DeepSkyBlue);
                     LevelManager.Instance.DrawLevel(spriteBatch, screen, font);
                     break;
                 case Scene.Paused:
