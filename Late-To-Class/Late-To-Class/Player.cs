@@ -18,10 +18,10 @@ namespace Late_To_Class
         int playerHeight = 64;
         int playerWidth = 64;
 
-        private double airTime;
+
         private double jumpHeight;
-        private int platformHeight;
-        private int baseHeight;
+
+
 
         /// <summary>
         /// Keys for all user input, set by default to W,A,D,S,J
@@ -71,9 +71,9 @@ namespace Late_To_Class
             
             pState = playerStates.Stand;
             dirRight = true;
-            pos = new Rectangle(200, 300, 66, 66);
+            pos = new Rectangle(0, 0, 66, 66);
             jumpHeight = pos.Y;
-            baseHeight = pos.Y;
+
 
             //acceleration stuff
             speed = 1; //initial speed of the player
@@ -105,10 +105,34 @@ namespace Late_To_Class
             KeyboardState kbState = Keyboard.GetState();
             position.X = pos.X;
             position.Y = pos.Y;
+
+            pos.Y += (int)jumpHeight;
+            jumpHeight++;
+            for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
+            {
+                if (pos.Intersects(LevelBuilder.Instance.collisionBoxes[i]) && Math.Abs(LevelBuilder.Instance.collisionBoxes[i].Top - pos.Bottom) < pos.Height / 2)
+                {
+                    {
+                        pos.Y = LevelBuilder.Instance.collisionBoxes[i].Top - pos.Height;
+                        jumpHeight = 0;
+                    }
+                }
+            }
+
+            if(jumpHeight >= 30) //This will prevent the player from gaining infinite vertical momentum if he is too high, primarily a concern for clipping through the floor at too high of speeds
+            {
+                jumpHeight = 30;
+            }
+
             switch (pState)
             {
                 case playerStates.Run:
+<<<<<<< HEAD
                     UpdateAnimation(gameTime, allAnims["run"]);
+=======
+                    UpdateRunAnimation(gameTime);
+
+>>>>>>> 14eb6c7e42e329f5a2b19301daacc6a02e72cc30
                     if (kbState.IsKeyDown(leftKey) && (dirRight == true || dirRight == false)) //running left
                     {
                         dirRight = false;
@@ -119,6 +143,19 @@ namespace Late_To_Class
                             speed++;
                             accTimer = 0;
                         }
+
+                        else
+                        {
+                            for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
+                            {
+                                if (pos.Intersects(LevelBuilder.Instance.collisionBoxes[i]) && pos.Left <= LevelBuilder.Instance.collisionBoxes[i].Right)
+                                {
+                                    pos.X += speed;
+                                    speed = 0;
+                                }
+                            }
+                        }
+
 
                         accTimer += gameTime.ElapsedGameTime.TotalSeconds;
                     }
@@ -133,6 +170,19 @@ namespace Late_To_Class
                             speed++;
                             accTimer = 0;
                         }
+
+                        else
+                        {
+                            for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
+                            {
+                                if (pos.Intersects(LevelBuilder.Instance.collisionBoxes[i]) && pos.Right >= LevelBuilder.Instance.collisionBoxes[i].Left)
+                                {
+                                    pos.X -= speed;
+                                    speed = 0;
+                                }
+                            }
+                        }
+
 
                         accTimer += gameTime.ElapsedGameTime.TotalSeconds;
                     }
@@ -155,24 +205,6 @@ namespace Late_To_Class
                             pState = playerStates.Stand;
                     }
 
-                    //if (kbState.IsKeyUp(rightKey) && kbState.IsKeyUp(leftKey) /*&& dirRight == false*/) //also not running
-                    //{
-                    //    if (speed > 0)
-                    //    {
-                    //        //this decrements the player's speed as long as the speed is less than max speed. This increment happens every timeToNextDec seconds
-                    //        if (accTimer >= timeToNextDec)
-                    //        {
-                    //            speed--;
-                    //            accTimer = 0;
-                    //        }
-
-                    //        accTimer += gameTime.ElapsedGameTime.TotalSeconds;
-
-                    //    }5
-                    //    else
-                    //        pState = playerStates.Stand;
-                    //}
-
                     if (kbState.IsKeyDown(leftKey) && kbState.IsKeyDown(rightKey)) //if both keys are pressed
                     {
                         if (speed > 0)
@@ -188,7 +220,7 @@ namespace Late_To_Class
 
                         }
 
-                        if (!dirRight)
+                        if (!dirRight) //Leaving the code untouched here, but when commented out, doesn't affect draw animation so may not be needed
                         {
                             dirRight = false;
                         }
@@ -197,10 +229,6 @@ namespace Late_To_Class
                     if (kbState.IsKeyDown(jumpKey))
                     {
                         pState = playerStates.Jump;
-                    }
-                    if(kbState.IsKeyDown(duckKey))
-                    {
-                        pState = playerStates.Slide;
                     }
 
                     //this checks to see what direction the player is moving, and then adds the speed accordingly
@@ -218,6 +246,7 @@ namespace Late_To_Class
 
 
                 case playerStates.Stand:
+
                     speed = 0;
                     if (kbState.IsKeyDown(leftKey))
                     {
@@ -235,33 +264,32 @@ namespace Late_To_Class
                     {
                         pState = playerStates.Jump;
                     }
-                    if(kbState.IsKeyDown(duckKey))
-                    {
-                        pState = playerStates.Duck;
-                    }
+
+
                     break;
 
                 case playerStates.Jump: //http://flatformer.blogspot.com/2010/02/making-character-jump-in-xnac-basic.html
                     UpdateAnimation(gameTime, allAnims["jump"]);
                     if (jumping == true)
                     {
+                        jumpHeight = -20;
                         pos.Y += (int)jumpHeight;
-                        jumpHeight += 0.85f;
 
                         if (kbState.IsKeyUp(jumpKey))
                         {
-                            jumpHeight += 0.85f;
+                            jumpHeight += 0.75;
+
                         }
 
                         if (kbState.IsKeyDown(leftKey))
                         {
                             dirRight = false;
-                            pos.X -= 6;
+                            //pos.X -= 4;
                         }
                         else if (kbState.IsKeyDown(rightKey))
                         {
                             dirRight = true;
-                            pos.X += 6;
+                            //pos.X += 4;
                         }
 
                         //this decelerates the player while jumping
@@ -290,12 +318,9 @@ namespace Late_To_Class
                         {
                             pos.X -= speed;
                         }
-
-                        if (pos.Y >= baseHeight)
+                        for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
                         {
-                            pos.Y = baseHeight;
                             jumping = false;
-
                             //this determines if the player had any speed during the jump, and if so to put them back in the running state as opposed to the standing state
                             if (speed > 0)
                             {
@@ -308,98 +333,11 @@ namespace Late_To_Class
                                 pState = playerStates.Stand;
                             }
                         }
-
-                        else if(pos.Y < baseHeight)
-                        {
-                            foreach(Rectangle tile in LevelBuilder.Instance.collisionBoxes)
-                            {
-                                if (pos.Intersects(tile))
-                                {
-                                    platformHeight = tile.Top;
-                                    pos.Y = platformHeight;
-                                    jumping = false;
-                                }
-                            }
-                        }
-                    }
-
-                    else if (jumping == true && kbState.IsKeyDown(rightKey))
-                    {
-                        pos.Y += (int)jumpHeight;
-                        pos.X += (int)jumpHeight;
-                        jumpHeight += 1;
-
-                        if (pos.Y >= baseHeight)
-                        {
-                            pos.Y = baseHeight;
-                            jumping = false;
-
-                            if (kbState.IsKeyDown(rightKey) || kbState.IsKeyDown(leftKey))
-                            {
-                                pState = playerStates.Run;
-                            }
-
-                            else
-                            {
-                                pState = playerStates.Stand;
-                            }
-                        }
                     }
                     else
                     {
                         jumping = true;
-                        jumpHeight = -22;
                     }
-
-                    /*if(pState == playerStates.Stand || pState == playerStates.Run || pState == playerStates.Jump) //Beginning of collision code
-                    {
-                        foreach(Rectangle tiles in LevelBuilder.Instance.collisionBoxes)
-                        {
-                            if (pos.Intersects(tiles))
-                            {
-                                if(pos.Y <= tiles.Top)
-                                {
-                                    platformHeight = tiles.Top;
-                                    pos.Y = platformHeight;
-                                }
-                                else if (pos.X <= tiles.Left)
-                                {
-                                    pos.X = tiles.Left;
-                                }
-                                else if (pos.X >= tiles.Right)
-                                {
-                                    pos.X = tiles.Right;
-                                }
-                            }
-                        }
-
-                        //OR
-
-                        /*for(int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
-                        {
-                            if (pos.Intersects(LevelBuilderInstance.collisionBoxes[i]))
-                            {
-                                if(pos.Y <= LevelBuilderInstance.collisionBoxes[i].Top)
-                                {
-                                    platformHeight = LevelBuilderInstance.collisionBoxes[i].Top;
-                                    pos.Y = platformHeight;
-                                }
-
-                                else
-                                {
-                                    if(dirRight == true)
-                                    {
-                                        pos.X = LevelBuilderInstance.collisionBoxes[i].Left;
-                                    }
-                                    else if (dirRight == false)
-                                    {
-                                        pos.X = LevelBuilderInstance.collisionBoxes[i].Right;
-                                    }
-                                }
-                            }
-                        }
-                    }*///End of collision code
-
                     break;
 
                 case playerStates.Duck:
