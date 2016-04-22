@@ -13,6 +13,7 @@ namespace Late_To_Class
     {
         private static LevelManager instance = null;
         private Texture2D tileSheet;
+        private Texture2D timerBG; //looks like a blackboard, goes behind the timer
         private Camera camera;
         Point CameraOrigin;
         Player player;
@@ -40,7 +41,7 @@ namespace Late_To_Class
         /// <param name="player">passes in the player so each level handles it</param>
         public void LoadLevel(string level, string spawns, ContentManager Content, Viewport newViewport, Player player)
         {
-            tileSheet = Content.Load<Texture2D>("lvl1Tiles");
+            tileSheet = Content.Load<Texture2D>("lvl1Tiles.png");
             LevelBuilder.Instance.LoadMap(level);
             LevelBuilder.Instance.LoadSpawns(spawns);
             LevelBuilder.Instance.TileMaker(tileSheet);
@@ -61,6 +62,8 @@ namespace Late_To_Class
                 //Powers.CreateSpawn(powerUp);
             }
             dTimer = (LevelBuilder.Instance.MapSize.X * LevelBuilder.Instance.MapSize.Y) / difficulty * (1 / 1); //replace 1/1 with 1/level once multiple levels exist
+
+            timerBG = Content.Load<Texture2D>("timerBlackboard.png");
         }
 
 
@@ -90,11 +93,15 @@ namespace Late_To_Class
         /// <param name="font"></param>
         public void DrawLevel(SpriteBatch spriteBatch, Point screen, SpriteFont font)
         {
-
+            //this spritebatch will follow the player as per camera.Transform
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             LevelBuilder.Instance.Draw(spriteBatch, screen, CameraOrigin);
-            spriteBatch.DrawString(font, dTimer.ToString(), new Vector2(50, 50), Color.White);
             player.Draw(spriteBatch);
+            spriteBatch.End();
+            //this spritebatch will not follow the player, and will always be drawn where they say they'll be
+            spriteBatch.Begin();
+            spriteBatch.Draw(timerBG, new Rectangle(8, 13, 160, 80), Color.White);
+            spriteBatch.DrawString(font, dTimer.ToString(), new Vector2(20, 20), Color.White);
             spriteBatch.End();
         }
 
