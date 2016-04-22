@@ -48,6 +48,7 @@ namespace Late_To_Class
             camera = new Camera(newViewport);
             this.player = player;
             player.position = new Vector2(LevelBuilder.Instance.PlayerPosition.X, LevelBuilder.Instance.PlayerPosition.Y);
+
             foreach(Point cluster in LevelBuilder.Instance.NPCSpawnPositions)
             {
                 //npcBuilder.CreateSpawn(cluster);
