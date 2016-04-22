@@ -127,12 +127,7 @@ namespace Late_To_Class
             switch (pState)
             {
                 case playerStates.Run:
-<<<<<<< HEAD
                     UpdateAnimation(gameTime, allAnims["run"]);
-=======
-                    UpdateRunAnimation(gameTime);
-
->>>>>>> 14eb6c7e42e329f5a2b19301daacc6a02e72cc30
                     if (kbState.IsKeyDown(leftKey) && (dirRight == true || dirRight == false)) //running left
                     {
                         dirRight = false;
