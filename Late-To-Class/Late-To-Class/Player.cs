@@ -18,10 +18,10 @@ namespace Late_To_Class
         int playerHeight = 64;
         int playerWidth = 64;
 
-        private double airTime;
+
         private double jumpHeight;
-        private int platformHeight;
-        private int baseHeight;
+
+
 
         /// <summary>
         /// Keys for all user input, set by default to W,A,D,S,J
@@ -78,9 +78,9 @@ namespace Late_To_Class
             
             pState = playerStates.Stand;
             dirRight = true;
-            pos = new Rectangle(200, 300, 66, 66);
+            pos = new Rectangle(0, 0, 66, 66);
             jumpHeight = pos.Y;
-            baseHeight = pos.Y;
+
 
             //acceleration stuff
             speed = 1; //initial speed of the player
@@ -132,6 +132,11 @@ namespace Late_To_Class
                         jumpHeight = 0;
                     }
                 }
+            }
+
+            if(jumpHeight >= 30) //This will prevent the player from gaining infinite vertical momentum if he is too high, primarily a concern for clipping through the floor at too high of speeds
+            {
+                jumpHeight = 30;
             }
 
             switch (pState)
