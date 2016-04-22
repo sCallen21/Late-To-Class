@@ -105,6 +105,7 @@ namespace Late_To_Class
                 NPCSpawnPositions = new List<Point>();
                 EnemySpawnPositions = new List<Point>();
                 PowerUpPositions = new List<Point>();
+                collisionBoxes = new List<Rectangle>();
                 int y = 0;
                 string line = null;
 

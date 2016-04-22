@@ -120,7 +120,7 @@ namespace Late_To_Class
 
 
             //Game
-            LevelManager.Instance.LoadLevel("Test.txt", Content, GraphicsDevice.Viewport, player);
+            //LevelManager.Instance.LoadLevel("Level1.txt", "Spawns.txt", Content, GraphicsDevice.Viewport, player);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Late_To_Class
                         switch (menuComponent.SelectedIndex)
                         {
                             case 0:
-                                LevelManager.Instance.LoadLevel("Test.txt", Content, GraphicsDevice.Viewport, player);
+                                LevelManager.Instance.LoadLevel("Level1.txt", "Spawns.txt", Content, GraphicsDevice.Viewport, player);
                                 activeScene = Scene.Game;
                                 break;
                             case 1:
@@ -175,7 +175,7 @@ namespace Late_To_Class
                 case Scene.Game:
                     LevelManager.Instance.UpdateLevel(gameTime);
                     if (LevelManager.Instance.Late()) { activeScene = Scene.Death; }
-
+                    // if (player.position.X == LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.Win;}
 
                     //pause 
                     btnPlay.Color = new Color(255, 255, 255, 255);

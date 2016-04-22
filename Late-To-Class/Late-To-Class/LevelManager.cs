@@ -38,11 +38,11 @@ namespace Late_To_Class
         /// <param name="Content">Content Folder</param>
         /// <param name="newViewport">passes in the viewport for the camera</param>
         /// <param name="player">passes in the player so each level handles it</param>
-        public void LoadLevel(string level, ContentManager Content, Viewport newViewport, Player player)
+        public void LoadLevel(string level, string spawns, ContentManager Content, Viewport newViewport, Player player)
         {
-            tileSheet = Content.Load<Texture2D>("tiles");
+            tileSheet = Content.Load<Texture2D>("lvl1Tiles");
             LevelBuilder.Instance.LoadMap(level);
-            LevelBuilder.Instance.LoadSpawns(level + "Spawns");
+            LevelBuilder.Instance.LoadSpawns(spawns);
             LevelBuilder.Instance.TileMaker(tileSheet);
             LevelBuilder.Instance.SpawnMaker();
             camera = new Camera(newViewport);
