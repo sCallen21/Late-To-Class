@@ -25,7 +25,7 @@ namespace Late_To_Class
         public Point PlayerPosition;
         public Point GoalPosition;
         public List<Point> EnemySpawnPositions;
-        public List<Point> NPCSpawnPositions;
+        public List<Rectangle> NPCSpawnPositions;
         public List<Point> PowerUpPositions;
         Rectangle toDraw;
         Point tileSize;
@@ -102,7 +102,7 @@ namespace Late_To_Class
             try
             {
                 input = new StreamReader(sSpawnName);
-                NPCSpawnPositions = new List<Point>();
+                NPCSpawnPositions = new List<Rectangle>();
                 EnemySpawnPositions = new List<Point>();
                 PowerUpPositions = new List<Point>();
                 collisionBoxes = new List<Rectangle>();
@@ -157,7 +157,7 @@ namespace Late_To_Class
                             break; // Displaced Collision Case
                         case 2:  PlayerPosition = new Point(x * tileSize.X, y * tileSize.Y);
                             break;//Player Spawn Location
-                        case 3:  NPCSpawnPositions.Add(new Point((x * tileSize.X), (tileSize.Y * y)));
+                        case 3:  NPCSpawnPositions.Add(new Rectangle((int)(x * tileSize.X), (int)(tileSize.Y * y),32,32));
                             break; //NPC Spawn Locations
                         case 4: EnemySpawnPositions.Add(new Point((x * tileSize.X), (tileSize.Y * y)));
                             break; //Enemy Spawn Locations
@@ -201,7 +201,7 @@ namespace Late_To_Class
         /// </summary>
         /// <param name="spriteBatch"></param>
         /// <param name="screen">Size of the render window as a point</param>
-        public void Draw(SpriteBatch spriteBatch, Point screen, Point CameraOrigin)
+        public void Draw(SpriteBatch spriteBatch, Point screen, Rectangle CameraView)
         {
             for (int y = 0; y < MapSize.Y; y++)
             {
@@ -211,7 +211,7 @@ namespace Late_To_Class
                     {
                         position = new Rectangle(x * tileSize.X, y * tileSize.Y, tileSize.X, tileSize.Y);
 
-                        if (position.X < CameraOrigin.X + screen.X + tileSize.X && position.X >= CameraOrigin.X && position.Y < CameraOrigin.Y + screen.Y + tileSize.Y && position.Y >= CameraOrigin.Y)
+                        if (position.X < CameraView.X + screen.X + tileSize.X && position.X >= CameraView.X && position.Y < CameraView.Y + screen.Y + tileSize.Y && position.Y >= CameraView.Y)
                             spriteBatch.Draw(tileSheet, position, Source[y, x], Color.White);
                     }
                 }
