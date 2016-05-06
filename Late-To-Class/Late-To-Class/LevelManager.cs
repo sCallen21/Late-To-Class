@@ -64,7 +64,7 @@ namespace Late_To_Class
             }
             foreach(Point powerUp in LevelBuilder.Instance.PowerUpPositions)
             {
-                //Powers.CreateSpawn(powerUp);
+                PowerUp.CreateSpawn(powerUp);
             }
             dTimer = (LevelBuilder.Instance.MapSize.X * LevelBuilder.Instance.MapSize.Y) / difficulty * (1 / 1); //replace 1/1 with 1/level once multiple levels exist
             timerBG = Content.Load<Texture2D>("timerBlackboard.png");
