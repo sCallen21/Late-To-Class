@@ -389,7 +389,7 @@ namespace Late_To_Class
 
                         for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
                         {
-                            if (hitbox.Bottom == LevelBuilder.Instance.collisionBoxes[i].Top && hitbox.TouchTopOf(LevelBuilder.Instance.collisionBoxes[i])) //Find another condition to prevent this, might rectangleHelper's touchTopOf
+                            if (hitbox.Bottom == LevelBuilder.Instance.collisionBoxes[i].Top && hitbox.TouchTopOf(LevelBuilder.Instance.collisionBoxes[i]))
                             {
                                 jumping = false;
 

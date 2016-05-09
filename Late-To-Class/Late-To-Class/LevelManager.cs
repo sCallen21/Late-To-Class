@@ -15,13 +15,11 @@ namespace Late_To_Class
         private Texture2D tileSheet;
         private Texture2D timerBG; //looks like a blackboard, goes behind the timer
         private Camera camera;
-        Rectangle CameraView;
+        Point CameraOrigin;
         Player player;
         private double dTimer;
         string cameraNotes = "Stephen";
         const int difficulty = 200;
-        NPCGenerator npcBuilder = new NPCGenerator();
-        List<Tuple<List<NPC>, Rectangle>> NPCHolder = new List<Tuple<List<NPC>,Rectangle>>();
        
 
         public static LevelManager Instance
@@ -48,15 +46,13 @@ namespace Late_To_Class
             LevelBuilder.Instance.LoadSpawns(spawns);
             LevelBuilder.Instance.TileMaker(tileSheet);
             LevelBuilder.Instance.SpawnMaker();
-
             camera = new Camera(newViewport);
             this.player = player;
             player.position = new Vector2(LevelBuilder.Instance.PlayerPosition.X, LevelBuilder.Instance.PlayerPosition.Y);
 
-
-            foreach(Rectangle cluster in LevelBuilder.Instance.NPCSpawnPositions)
+            foreach(Point cluster in LevelBuilder.Instance.NPCSpawnPositions)
             {
-               NPCHolder.Add(new Tuple<List<NPC>,Rectangle>(npcBuilder.CreateSpawn(Content), cluster));
+                //npcBuilder.CreateSpawn(cluster);
             }
             foreach(Point guard in LevelBuilder.Instance.EnemySpawnPositions)
             {
@@ -67,6 +63,7 @@ namespace Late_To_Class
                 //Powers.CreateSpawn(powerUp);
             }
             dTimer = (LevelBuilder.Instance.MapSize.X * LevelBuilder.Instance.MapSize.Y) / difficulty * (1 / 1); //replace 1/1 with 1/level once multiple levels exist
+
             timerBG = Content.Load<Texture2D>("timerBlackboard.png");
         }
 
@@ -81,17 +78,10 @@ namespace Late_To_Class
             camera.Update(player.position, LevelBuilder.Instance.MapSize.X * 32, LevelBuilder.Instance.MapSize.Y * 32);
             dTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             dTimer = (Math.Round(dTimer, 2));
-            CameraView = new Rectangle((int)player.position.X - 150, (int)player.position.Y + 150, camera.cameraView.X, camera.cameraView.Y);
-           foreach(Tuple<List<NPC>,Rectangle> cluster in NPCHolder)
-            {
-                if (CameraView.Intersects(cluster.Item2))
-                {
-                    foreach(NPC npc in cluster.Item1)
-                    {
-                        npc.Update(gameTime);
-                    }
-                }
-            }
+            CameraOrigin.X = camera.cameraView.X + player.speed;
+            if (CameraOrigin.X < 0) { CameraOrigin.X = 0; }
+            CameraOrigin.Y = camera.cameraView.Y + player.speed;
+            cameraNotes = CameraOrigin.X.ToString() + ";" + CameraOrigin.Y.ToString();
 
 
         }
@@ -106,19 +96,8 @@ namespace Late_To_Class
         {
             //this spritebatch will follow the player as per camera.Transform
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
-            LevelBuilder.Instance.Draw(spriteBatch, screen, CameraView);
+            LevelBuilder.Instance.Draw(spriteBatch, screen, CameraOrigin);
             player.Draw(spriteBatch);
-            foreach (Tuple<List<NPC>, Rectangle> cluster in NPCHolder)
-            {
-                if (CameraView.Intersects(cluster.Item2))
-                {
-                    foreach (NPC npc in cluster.Item1)
-                    {
-                        if (npc.bodyPosition.Intersects(CameraView))
-                            npc.Draw(spriteBatch);
-                    }
-                }
-            }
             spriteBatch.End();
             //this spritebatch will not follow the player, and will always be drawn where they say they'll be
             spriteBatch.Begin();
