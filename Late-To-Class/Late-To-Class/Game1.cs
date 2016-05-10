@@ -266,7 +266,7 @@ namespace Late_To_Class
                 case Scene.Game:
                     LevelManager.Instance.UpdateLevel(gameTime);
                     if (LevelManager.Instance.Late()) { activeScene = Scene.Death; }
-                    // if (player.position.X == LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.Win;}
+                    // if (player.position.X >= LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.Win;}
 
                     //pause 
                     btnPlay.Color = new Color(255, 255, 255, 255);

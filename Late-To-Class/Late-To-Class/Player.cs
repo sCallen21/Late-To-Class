@@ -12,7 +12,7 @@ namespace Late_To_Class
 {
     public class Player
     {
-        private Rectangle drawnTex;
+        public Rectangle drawnTex;
         private Rectangle hitbox;
         private Texture2D tex;
         public Vector2 position;
