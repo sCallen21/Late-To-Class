@@ -12,7 +12,8 @@ namespace Late_To_Class
 {
     public class Player
     {
-        private Rectangle pos;
+        private Rectangle drawnTex;
+        private Rectangle hitbox;
         private Texture2D tex;
         public Vector2 position;
         int playerHeight = 64;
@@ -68,11 +69,13 @@ namespace Late_To_Class
 
         public Player()
         {
-            
+
             pState = playerStates.Stand;
             dirRight = true;
-            pos = new Rectangle(0, 0, 66, 66);
-            jumpHeight = pos.Y;
+            drawnTex = new Rectangle(0, 0, 66, 66);
+            hitbox = new Rectangle(drawnTex.X + (drawnTex.Width / 4), drawnTex.Y, drawnTex.Width / 2, drawnTex.Height);
+            jumpHeight = drawnTex.Y;
+            position = new Vector2(hitbox.X, hitbox.Y);
 
 
             //acceleration stuff
@@ -103,23 +106,47 @@ namespace Late_To_Class
         public void Update(GameTime gameTime)
         {
             KeyboardState kbState = Keyboard.GetState();
-            position.X = pos.X;
-            position.Y = pos.Y;
+            drawnTex.X = hitbox.X - (drawnTex.Width / 4);
+            drawnTex.Y = hitbox.Y;
+            position.X = drawnTex.X;
+            position.Y = drawnTex.Y;
 
-            pos.Y += (int)jumpHeight;
+
+            hitbox.Y += (int)jumpHeight;
+
             jumpHeight++;
+
             for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
             {
-                if (pos.Intersects(LevelBuilder.Instance.collisionBoxes[i]) && Math.Abs(LevelBuilder.Instance.collisionBoxes[i].Top - pos.Bottom) < pos.Height / 2)
+                if (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]) && Math.Abs(LevelBuilder.Instance.collisionBoxes[i].Top - hitbox.Bottom) < hitbox.Height / 2)
                 {
+
+                    if (jumpHeight < 0 && dirRight == true)
                     {
-                        pos.Y = LevelBuilder.Instance.collisionBoxes[i].Top - pos.Height;
+                        hitbox.X += speed;
+                    }
+                    else if (jumpHeight < 0 && dirRight == false)
+                    {
+                        hitbox.X -= speed;
+                    }
+                    else
+                    {
+                        if (jumpHeight < 0 && dirRight == true)
+                        {
+                            hitbox.X += speed;
+                        }
+                        else if (jumpHeight < 0 && dirRight == false)
+                        {
+                            hitbox.X -= speed;
+                        }
+
+                        hitbox.Y = LevelBuilder.Instance.collisionBoxes[i].Top - hitbox.Height;
                         jumpHeight = 0;
                     }
                 }
             }
 
-            if(jumpHeight >= 30) //This will prevent the player from gaining infinite vertical momentum if he is too high, primarily a concern for clipping through the floor at too high of speeds
+            if (jumpHeight >= 30) //This will prevent the player from gaining infinite vertical momentum if he is too high, primarily a concern for clipping through the floor at too high of speeds
             {
                 jumpHeight = 30;
             }
@@ -143,10 +170,13 @@ namespace Late_To_Class
                         {
                             for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
                             {
-                                if (pos.Intersects(LevelBuilder.Instance.collisionBoxes[i]) && pos.Left <= LevelBuilder.Instance.collisionBoxes[i].Right)
+                                if (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]) && hitbox.Left <= LevelBuilder.Instance.collisionBoxes[i].Right && hitbox.Bottom <= LevelBuilder.Instance.collisionBoxes[i].Bottom)
                                 {
-                                    pos.X += speed;
+                                    hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Right;
+                                    hitbox.X += speed;
                                     speed = 0;
+                                    jumpHeight = 0;
+                                    pState = playerStates.Jump;
                                 }
                             }
                         }
@@ -170,10 +200,14 @@ namespace Late_To_Class
                         {
                             for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
                             {
-                                if (pos.Intersects(LevelBuilder.Instance.collisionBoxes[i]) && pos.Right >= LevelBuilder.Instance.collisionBoxes[i].Left)
+                                if (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]) && hitbox.Right >= LevelBuilder.Instance.collisionBoxes[i].Left && hitbox.Bottom <= LevelBuilder.Instance.collisionBoxes[i].Bottom)
                                 {
-                                    pos.X -= speed;
+
+                                    hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Left - hitbox.Width;
+                                    hitbox.X -= speed;
                                     speed = 0;
+                                    jumpHeight = 0;
+                                    pState = playerStates.Jump;
                                 }
                             }
                         }
@@ -221,23 +255,32 @@ namespace Late_To_Class
                         }
                     }
 
+                    if (kbState.IsKeyDown(duckKey))
+                    {
+                        pState = playerStates.Slide;
+                    }
+
                     if (kbState.IsKeyDown(jumpKey))
                     {
+                        jumpHeight = -20;
                         pState = playerStates.Jump;
                     }
 
                     //this checks to see what direction the player is moving, and then adds the speed accordingly
                     if (dirRight)
                     {
-                        pos.X += speed;
+                        hitbox.X += speed;
                     }
 
                     else if (!dirRight)
                     {
-                        pos.X -= speed;
+                        hitbox.X -= speed;
                     }
 
                     break;
+
+
+
 
 
                 case playerStates.Stand:
@@ -257,18 +300,45 @@ namespace Late_To_Class
                     }
                     if (kbState.IsKeyDown(jumpKey))
                     {
+                        jumpHeight = -20;
                         pState = playerStates.Jump;
+                    }
+
+                    for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
+                    {
+                        if (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]))
+                        {
+                            if (hitbox.Right > LevelBuilder.Instance.collisionBoxes[i].Left && (hitbox.Right - hitbox.Width / 2) <= LevelBuilder.Instance.collisionBoxes[i].Left)
+                            {
+                                hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Left - drawnTex.Width;
+                            }
+                            else if (hitbox.Left < LevelBuilder.Instance.collisionBoxes[i].Right && (hitbox.Left + hitbox.Width / 2) >= LevelBuilder.Instance.collisionBoxes[i].Right)
+                            {
+                                hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Right;
+                            }
+                        }
+                    }
+
+                    if (kbState.IsKeyDown(duckKey))
+                    {
+                        pState = playerStates.Duck;
                     }
 
 
                     break;
 
+
+
+
+
+
                 case playerStates.Jump: //http://flatformer.blogspot.com/2010/02/making-character-jump-in-xnac-basic.html
                     UpdateAnimation(gameTime, allAnims["jump"]);
                     if (jumping == true)
                     {
-                        jumpHeight = -20;
-                        pos.Y += (int)jumpHeight;
+                        //jumpHeight = -20;
+                        //drawnTex.Y += (int)jumpHeight;
+                        position.Y += (int)jumpHeight;
 
                         if (kbState.IsKeyUp(jumpKey))
                         {
@@ -306,48 +376,69 @@ namespace Late_To_Class
                         //this checks to see what direction the player is moving, and then adds the speed accordingly
                         if (dirRight)
                         {
-                            pos.X += speed;
+                            drawnTex.X += speed;
+                            hitbox.X += speed;
                         }
 
                         else if (!dirRight)
                         {
-                            pos.X -= speed;
+                            drawnTex.X -= speed;
+                            hitbox.X -= speed;
                         }
+
+
                         for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
                         {
-                            jumping = false;
-                            //this determines if the player had any speed during the jump, and if so to put them back in the running state as opposed to the standing state
-                            if (speed > 0)
+                            if (hitbox.Bottom == LevelBuilder.Instance.collisionBoxes[i].Top && hitbox.TouchTopOf(LevelBuilder.Instance.collisionBoxes[i]))
                             {
-                                allAnims["jump"].CurrentFrame = 0; //resets jump animation
-                                pState = playerStates.Run;
-                            }
-                            else
-                            {
-                                allAnims["jump"].CurrentFrame = 0; //resets jump animation
-                                pState = playerStates.Stand;
+                                jumping = false;
+
+                                if (dirRight == true)
+                                {
+                                    hitbox.X += speed;
+                                }
+                                else if (dirRight == false)
+                                {
+                                    hitbox.X -= speed;
+                                }
+
+                                //this determines if the player had any speed during the jump, and if so to put them back in the running state as opposed to the standing state
+                                if (speed > 0)
+                                {
+                                    allAnims["jump"].CurrentFrame = 0; //resets jump animation
+                                    pState = playerStates.Run;
+                                }
+                                else
+                                {
+                                    allAnims["jump"].CurrentFrame = 0; //resets jump animation
+                                    pState = playerStates.Stand;
+                                }
                             }
                         }
                     }
+
                     else
                     {
                         jumping = true;
                     }
                     break;
 
+
+
+
                 case playerStates.Duck:
-                    if(kbState.IsKeyUp(duckKey))
+                    if (kbState.IsKeyUp(duckKey))
                     {
                         pState = playerStates.Stand;
                     }
-                    if(kbState.IsKeyDown(jumpKey))
+                    if (kbState.IsKeyDown(jumpKey))
                     {
                         // after collision is implemented, some code will go here for the player jumping down off a platform
                     }
                     break;
 
                 case playerStates.Slide:
-                    if(kbState.IsKeyUp(duckKey))
+                    if (kbState.IsKeyUp(duckKey))
                     {
                         pState = playerStates.Run;
                     }
@@ -363,22 +454,22 @@ namespace Late_To_Class
 
                         if (dirRight)
                         {
-                            pos.X += speed;
+                            hitbox.X += speed;
                         }
 
                         else if (!dirRight)
                         {
-                            pos.X -= speed;
+                            hitbox.X -= speed;
                         }
 
                     }
-                    
+
                     else
                     {
                         pState = playerStates.Duck;
                     }
                     break;
-                        
+
             }
 
             allAnims["run"].FPS = (speed + 1) * 1.8;
@@ -387,7 +478,7 @@ namespace Late_To_Class
 
         public void Draw(SpriteBatch playerSprite)
         {
-            
+
             switch (pState)
             {
                 case playerStates.Stand:
@@ -405,7 +496,7 @@ namespace Late_To_Class
                 case playerStates.Slide:
                     DrawSlide(playerSprite);
                     break;
-                    
+
             }
         }
 
@@ -414,9 +505,9 @@ namespace Late_To_Class
             sourceRec = new Rectangle(0, 0, playerWidth, playerHeight);
 
             if (dirRight)
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
             else
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
         }
 
         public void DrawRun(SpriteBatch spriteBatch)
@@ -424,9 +515,9 @@ namespace Late_To_Class
             sourceRec = new Rectangle(allAnims["run"].CurrentFrame * playerWidth, playerHeight, playerWidth, playerHeight);
 
             if (dirRight)
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
             else
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
         }
 
         public void DrawJump(SpriteBatch spriteBatch)
@@ -434,27 +525,27 @@ namespace Late_To_Class
             sourceRec = new Rectangle(allAnims["jump"].CurrentFrame * playerWidth, playerHeight * 2, playerWidth, playerHeight);
 
             if (dirRight)
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
             else
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
         }
         public void DrawDuck(SpriteBatch spriteBatch)
         {
             sourceRec = new Rectangle(0, playerHeight * 3, playerWidth, playerHeight);
 
             if (dirRight)
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
             else
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
         }
         public void DrawSlide(SpriteBatch spriteBatch)
         {
             sourceRec = new Rectangle(0, playerHeight * 4, playerWidth, playerHeight);
 
             if (dirRight)
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
             else
-                spriteBatch.Draw(tex, pos, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+                spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
         }
 
         public void UpdateAnimation(GameTime gameTime, AnimationHelper ah)
@@ -463,7 +554,7 @@ namespace Late_To_Class
 
             if (timeCounter >= ah.SPF)
             {
-                ah.CurrentFrame ++;
+                ah.CurrentFrame++;
 
                 if (ah.CurrentFrame >= ah.TotalFrames)
                 {
@@ -475,152 +566,3 @@ namespace Late_To_Class
         }
     }
 }
-
-
-
-///
-//This first bit should go in Game1 update
-/* 
-foreach (CollisionTiles tile in map.CollisionTiles)
-            {
-                player.Collision(tile.Rectangle, map.Width, map.Height);
-*/
-
-//this is the entire player class for that project. Make sure to take a look at how the rectangle is updated. You can also take a look at how movement is done here, in case that helps
-//Shove the above code into the Update section of Game1, and it will check the player for collisions there, and pass in the tile it hits.
-/*
-{
-    class Player
-    {
-        private Texture2D texture;
-        private Vector2 position = new Vector2 (64, 384);
-        private Vector2 velocity;
-        private Rectangle rectangle;
-
-        private bool hasJumped = false;
-
-        public Vector2 Position
-        {
-            get { return position; }
-        }
-
-        public Player() { }
-
-        public void Load(ContentManager Content)
-        {
-            texture = Content.Load<Texture2D>("player");
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            position += velocity;
-            rectangle = new Rectangle((int) position.X, (int)position.Y, texture.Width, texture.Height);
-
-            Input(gameTime);
-
-            if (velocity.Y < 10) { velocity.Y += 0.4f; }
-
-        }
-
-        private void Input(GameTime gameTime)
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                velocity.X = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 3;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                velocity.X = -(float)gameTime.ElapsedGameTime.TotalMilliseconds / 3;
-            }
-            else { velocity.X = 0f; }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && hasJumped == false)
-            {
-                position.Y -= 5f;
-                velocity.Y = -9f;
-                hasJumped = true;
-            }
-        }
-
-        public void Collision(Rectangle newRectangle, int xOffset, int yOffset)
-        {
-            if (rectangle.TouchTopOf(newRectangle))
-            {
-                rectangle.Y = newRectangle.Y - rectangle.Height;
-                velocity.Y = 0f;
-                hasJumped = false;
-            }
-
-            if (rectangle.TouchLeftOf(newRectangle))
-            {
-                position.X = newRectangle.X - rectangle.Width - 2;
-            }
-
-            if (rectangle.TouchRightOf(newRectangle))
-            {
-                position.X = newRectangle.X + newRectangle.Width + 2;
-            }
-
-            if (rectangle.TouchBottomOf(newRectangle)) {velocity.Y = 1f;}
-
-            if (position.X < 0) { position.X = 0;}
-            if(position.X > xOffset - rectangle.Width) { position.X = xOffset - rectangle.Width;}
-            if (position.Y < 0) {velocity.Y = 1f; }
-            if (position.Y > yOffset - rectangle.Height) { position.Y = yOffset - rectangle.Height; }
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture, rectangle, Color.White);
-        }
-    }
-}
-*/
-
-// the rectangles Touch(thing)of is from this class here. There are four different options for how something collides with a thing, and determines what axis to use for moving the player
-//away from the thing it hit, rather than through it. The first three reset position, the TouchBottomOf check forces a jump to stop if it hits say, a roof
-//The camera should handle everything with those last four if statements, they simply keep the player from leaving the bounds of the map, but I would say don't include those right now, I will deal with them
-//later, because I might make the camera handle that instead. not sure yet, so don't worry about them.
-
-
-//Hopefully this is straightforward enough for you. Each time the player hits something, the game will check using these four options to see which side of the tile the player hit.
-//Each of these simply checks a series of bounds to determine where, and returns true or false depending on the result.
-//Honestly, it would be best just to take these four methods and shove them into the class listed below, and then dont worry about them
-//Hope that all this code helps you out, feel free to just use it if it works well enough as is, but if not, hopefully it is a good starting place for you
-/*
-static class RectangleHelper
-    {
-        public static bool TouchTopOf(this Rectangle r1, Rectangle r2)
-        {
-            return (r1.Bottom >= r2.Top - 1 &&
-                r1.Bottom <= r2.Top + (r2.Height / 2) &&
-                r1.Right >= r2.Left + (r2.Width / 5) &&
-                r1.Left <= r2.Right - (r2.Width / 5));
-        }
-
-        public static bool TouchBottomOf(this Rectangle r1, Rectangle r2)
-        {
-            return (r1.Top <= r2.Bottom + (r2.Height / 5) &&
-                    r1.Top >= r2.Bottom - 1 &&
-                    r1.Right >= r2.Left + r2.Width / 5 &&
-                    r1.Left <= r2.Right - (r2.Width / 5));
-        }
-
-        public static bool TouchLeftOf(this Rectangle r1, Rectangle r2)
-        {
-            return (r1.Right <= r2.Right &&
-                    r1.Right >= r2.Left - 5 &&
-                    r1.Top <= r2.Bottom - (r2.Width / 4) &&
-                    r1.Bottom >= r2.Top + (r2.Width / 4));
-        }
-
-        public static bool TouchRightOf(this Rectangle r1, Rectangle r2)
-        {
-            return (r1.Left >= r2.Left &&
-                    r1.Left <= r2.Right + 5 &&
-                    r1.Top <= r2.Bottom - (r2.Width / 4) &&
-                    r1.Bottom >= r2.Top + (r2.Width / 4));
-        }
-    }
-}
-*/
