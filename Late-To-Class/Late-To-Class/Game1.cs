@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 //Chris Banks
 namespace Late_To_Class
@@ -18,12 +19,16 @@ namespace Late_To_Class
         //Menu State items
         MenuComponent menuComponent;
         Scene activeScene;
-        
+        //parallax menu
+        Rectangle texRec;
+        Rectangle texRecTwo;
+        Texture2D menuTex;
+
         //helpscene 
         HelpScene helpScene;
         Texture2D helpForegroundTexture;
         Texture2D backScene;
-               
+        OptionComponet OptionComponet;
         KeyboardState kbState, previousKbState;
         Rectangle rec;
 
@@ -66,6 +71,10 @@ namespace Late_To_Class
         {
             player = new Player();
             activeScene = Scene.MainMenu;
+
+            //menu parallax 
+            texRec = new Rectangle(0, 0, 1600, 600);
+            texRecTwo = new Rectangle(1600, 0, 1600, 600);
  
 
             base.Initialize();
@@ -79,8 +88,8 @@ namespace Late_To_Class
         {
             //Full Game Content - This section is for content the entire game needs
 
-            graphics.IsFullScreen = true;
-            graphics.ApplyChanges();
+            //graphics.IsFullScreen = true;
+            //graphics.ApplyChanges();
             
             rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -91,14 +100,22 @@ namespace Late_To_Class
 
 
             //help menu - TODO - replace with options menu
-            backScene = Content.Load<Texture2D>("helpBack");
-            helpForegroundTexture = Content.Load<Texture2D>("helpFront");
-            helpScene = new HelpScene(this, backScene);
-            Components.Add(helpScene);
+            string[] OptionItems = new string[5];
+            Keys[] controls = new Keys[5];
+            GameControls.Instance.Conflitcting.CopyTo(controls, 0);
+            for (int i = 0; i < controls.Length; i++)
+            {
+                OptionItems[i] = controls[i].ToString();
+            }
+            OptionComponet = new OptionComponet(this, spriteBatch, font, OptionItems);
+            Components.Add(OptionComponet);
+            
             
             //Main Menu
             string[] menuItems = { "Start Game", "Options", "End Game" };
             menuComponent = new MenuComponent(this, spriteBatch, font, menuItems);
+            menuTex = Content.Load<Texture2D>("Menu.png");
+
             Components.Add(menuComponent);
 
             //pause 
@@ -147,6 +164,18 @@ namespace Late_To_Class
             switch (activeScene)
             {
                 case Scene.MainMenu:
+                    GameControls.Instance.LoadControls();
+                    if (texRec.X + menuTex.Width <= 0)
+                        texRec.X = texRecTwo.X + menuTex.Width;
+                    // Then repeat this check for rectangle2.
+                    if (texRecTwo.X + menuTex.Width <= 0)
+                        texRecTwo.X = texRec.X + menuTex.Width;
+
+                    // 6. Incrementally move the rectangles to the left. 
+                    // Optional: Swap X for Y if you want to scroll vertically.
+                    texRec.X -= 5;
+                    texRecTwo.X -= 5;
+
                     if (SingleKeyPress(Keys.Enter))
                     {
                         switch (menuComponent.SelectedIndex)
@@ -166,10 +195,72 @@ namespace Late_To_Class
 
                     break;
                 case Scene.Options:
-                    if (SingleKeyPress(Keys.Escape))
+                    
+                    if (SingleKeyPress(Keys.Enter))
                     {
-                        activeScene = Scene.MainMenu;
+                       
+                        switch (OptionComponet.SelectedIndex)
+                        {
+                            case 0:
+                                try
+                                {
+                                    Keys[] pressed = kbState.GetPressedKeys();
+                                    Keys up = pressed[1];
+                                    GameControls.Instance.ConfigureControls("jump", up);
+                                    OptionComponet.MenuItem[0] = up.ToString();
+                                }
+                                catch(Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+                                
+                                
+                                break;
+                            case 1:
+                                try
+                                {
+                                    Keys[] pressed = kbState.GetPressedKeys();
+                                    Keys left = pressed[1];
+                                    GameControls.Instance.ConfigureControls("moveLeft", left);
+                                    OptionComponet.MenuItem[1] = left.ToString();
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+                                break;
+                            case 2:
+                                try
+                                {
+                                    Keys[] pressed = kbState.GetPressedKeys();
+                                    Keys down = pressed[1];
+                                    GameControls.Instance.ConfigureControls("duck", down);
+                                    OptionComponet.MenuItem[2] = down.ToString();
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+                                break;
+                            case 3:
+                                try
+                                {
+                                    Keys[] pressed = kbState.GetPressedKeys();
+                                    Keys right = pressed[1];
+                                    GameControls.Instance.ConfigureControls("moveRight", right);
+                                    OptionComponet.MenuItem[3] = right.ToString();
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+                                GameControls.Instance.SaveControls();
+                                activeScene = Scene.MainMenu;
+                                break;
+
+                        }
                     }
+                   
                     break;
 
                 case Scene.Game:
@@ -232,13 +323,15 @@ namespace Late_To_Class
                 case Scene.MainMenu:
                     GraphicsDevice.Clear(Color.SlateGray);
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
+                    spriteBatch.Draw(menuTex, texRec, Color.White);
+                    spriteBatch.Draw(menuTex, texRecTwo, Color.White);
                     base.Draw(gameTime);
                     spriteBatch.End();
                     break;
                 case Scene.Options:
-                    spriteBatch.Begin();
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
                     GraphicsDevice.Clear(Color.SlateGray);
-                    spriteBatch.Draw(backScene, rec, Color.White);
+                    OptionComponet.Draw();
                     spriteBatch.End();
                     break;
                 case Scene.Game:
