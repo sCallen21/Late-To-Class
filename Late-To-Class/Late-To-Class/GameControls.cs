@@ -190,6 +190,11 @@ namespace Late_To_Class
                     break;
             }
         }
+        //added this so i could get they keys
+        public Keys[] Conflitcting
+        {
+            get { return conflicting; }
+        }
     }
 
     
