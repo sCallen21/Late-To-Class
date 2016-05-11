@@ -50,6 +50,7 @@
     <Compile Include="ImageComponet.cs" />
     <Compile Include="LevelBuilder.cs" />
     <Compile Include="LevelManager.cs" />
+    <Compile Include="LevelMenu.cs" />
     <Compile Include="MenuComponet.cs" />
     <Compile Include="OptionComponet.cs" />
     <Compile Include="Player.cs" />
