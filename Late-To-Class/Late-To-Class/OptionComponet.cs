@@ -13,7 +13,7 @@ namespace Late_To_Class
         string[] menuItems;
         int selectedIndex;
 
-        Color normal = Color.White;
+        Color normal = Color.Black;
         Color hilite = Color.Yellow;
 
         KeyboardState keyboardState;
@@ -69,7 +69,7 @@ namespace Late_To_Class
 
             position = new Vector2(
                 400,
-                100);
+                110);
         }
 
         public override void Initialize()
@@ -116,12 +116,8 @@ namespace Late_To_Class
                     tint = hilite;
                 else
                     tint = normal;
-                spriteBatch.DrawString(
-                    spriteFont,
-                    menuItems[i],
-                    location,
-                    tint);
-                location.Y += spriteFont.LineSpacing + 5;
+                spriteBatch.DrawString(spriteFont, menuItems[i],location, tint, 0f, new Vector2(0, 0), .5f, SpriteEffects.None, 0f);
+                location.Y += spriteFont.LineSpacing + 2;
             }
         }
 

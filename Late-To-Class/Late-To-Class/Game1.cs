@@ -27,7 +27,6 @@ namespace Late_To_Class
         //helpscene 
         HelpScene helpScene;
         Texture2D helpForegroundTexture;
-        Texture2D backScene;
         OptionComponet OptionComponet;
         KeyboardState kbState, previousKbState;
         Rectangle rec;
@@ -39,6 +38,11 @@ namespace Late_To_Class
         Texture2D playTex;
         Texture2D quitTex;
 
+        //win 
+        Texture2D winTex;
+        
+
+        
         //death
         Texture2D deathTex;
         Rectangle deathRec;
@@ -73,8 +77,8 @@ namespace Late_To_Class
             activeScene = Scene.MainMenu;
 
             //menu parallax 
-            texRec = new Rectangle(0, 0, 1600, 600);
-            texRecTwo = new Rectangle(1600, 0, 1600, 600);
+            texRec = new Rectangle(0, 0, 1500, 600);
+            texRecTwo = new Rectangle(1500, 0, 1500, 600);
  
 
             base.Initialize();
@@ -100,13 +104,16 @@ namespace Late_To_Class
 
 
             //help menu - TODO - replace with options menu
-            string[] OptionItems = new string[5];
+            helpForegroundTexture = Content.Load<Texture2D>("HelpTex.png");
+            GameControls.Instance.LoadControls();
+            string[] OptionItems = new string[6];
             Keys[] controls = new Keys[5];
             GameControls.Instance.Conflitcting.CopyTo(controls, 0);
             for (int i = 0; i < controls.Length; i++)
             {
                 OptionItems[i] = controls[i].ToString();
             }
+            OptionItems[5] = "Exit";
             OptionComponet = new OptionComponet(this, spriteBatch, font, OptionItems);
             Components.Add(OptionComponet);
             
@@ -134,7 +141,8 @@ namespace Late_To_Class
 
             tex = Content.Load<Texture2D>("Mouse.PNG");
 
-
+            //wiin
+            winTex = Content.Load<Texture2D>("Wintex.png");
 
             //Game
             LevelManager.Instance.LoadLevel("Level.txt", "SpawnAndCollision.txt", Content, GraphicsDevice.Viewport, player);
@@ -164,7 +172,6 @@ namespace Late_To_Class
             switch (activeScene)
             {
                 case Scene.MainMenu:
-                    GameControls.Instance.LoadControls();
                     if (texRec.X + menuTex.Width <= 0)
                         texRec.X = texRecTwo.X + menuTex.Width;
                     // Then repeat this check for rectangle2.
@@ -195,10 +202,10 @@ namespace Late_To_Class
 
                     break;
                 case Scene.Options:
-                    
+
                     if (SingleKeyPress(Keys.Enter))
                     {
-                       
+
                         switch (OptionComponet.SelectedIndex)
                         {
                             case 0:
@@ -207,22 +214,25 @@ namespace Late_To_Class
                                     Keys[] pressed = kbState.GetPressedKeys();
                                     Keys up = pressed[1];
                                     GameControls.Instance.ConfigureControls("jump", up);
+                                    GameControls.Instance.SaveControls();
                                     OptionComponet.MenuItem[0] = up.ToString();
                                 }
-                                catch(Exception e)
+                                catch (Exception e)
                                 {
                                     Console.WriteLine(e);
                                 }
-                                
-                                
+
+
                                 break;
                             case 1:
                                 try
                                 {
                                     Keys[] pressed = kbState.GetPressedKeys();
-                                    Keys left = pressed[1];
-                                    GameControls.Instance.ConfigureControls("moveLeft", left);
-                                    OptionComponet.MenuItem[1] = left.ToString();
+                                    Keys down = pressed[1];
+                                    GameControls.Instance.ConfigureControls("duck", down);
+                                    GameControls.Instance.SaveControls();
+                                    OptionComponet.MenuItem[1] = down.ToString();
+                                   
                                 }
                                 catch (Exception e)
                                 {
@@ -233,9 +243,10 @@ namespace Late_To_Class
                                 try
                                 {
                                     Keys[] pressed = kbState.GetPressedKeys();
-                                    Keys down = pressed[1];
-                                    GameControls.Instance.ConfigureControls("duck", down);
-                                    OptionComponet.MenuItem[2] = down.ToString();
+                                    Keys left = pressed[1];
+                                    GameControls.Instance.ConfigureControls("moveLeft", left);
+                                    GameControls.Instance.SaveControls();
+                                    OptionComponet.MenuItem[2] = left.ToString();
                                 }
                                 catch (Exception e)
                                 {
@@ -248,25 +259,43 @@ namespace Late_To_Class
                                     Keys[] pressed = kbState.GetPressedKeys();
                                     Keys right = pressed[1];
                                     GameControls.Instance.ConfigureControls("moveRight", right);
+                                    GameControls.Instance.SaveControls();
                                     OptionComponet.MenuItem[3] = right.ToString();
                                 }
                                 catch (Exception e)
                                 {
                                     Console.WriteLine(e);
                                 }
+                                break;
+                            case 4:
+                                try
+                                {
+                                    Keys[] pressed = kbState.GetPressedKeys();
+                                    Keys powerUp = pressed[1];
+                                    GameControls.Instance.ConfigureControls("powerUp", powerUp);
+                                    GameControls.Instance.SaveControls();
+                                    OptionComponet.MenuItem[4] = powerUp.ToString();
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+                                break;
+                            case 5:
                                 GameControls.Instance.SaveControls();
                                 activeScene = Scene.MainMenu;
                                 break;
-
                         }
+
                     }
-                   
+
                     break;
 
                 case Scene.Game:
                     LevelManager.Instance.UpdateLevel(gameTime);
+                    
                     if (LevelManager.Instance.Late()) { activeScene = Scene.Death; }
-                    // if (player.position.X == LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.Win;}
+                    if (player.position.X == LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.MainMenu;}
 
                     //pause 
                     btnPlay.Color = new Color(255, 255, 255, 255);
@@ -303,6 +332,13 @@ namespace Late_To_Class
                     }
                     btnQuit.Update(mouse);
                     break;
+                case Scene.Win:
+                    if (btnQuit.isClicked)
+                    {
+                        activeScene = Scene.MainMenu;
+                    }
+                    btnQuit.Update(mouse);
+                    break;
 
                 case Scene.Exit:
                     Exit();
@@ -330,7 +366,8 @@ namespace Late_To_Class
                     break;
                 case Scene.Options:
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
-                    GraphicsDevice.Clear(Color.SlateGray);
+                    GraphicsDevice.Clear(Color.White);
+                    spriteBatch.Draw(helpForegroundTexture, rec, Color.White);
                     OptionComponet.Draw();
                     spriteBatch.End();
                     break;
@@ -353,6 +390,14 @@ namespace Late_To_Class
                     GraphicsDevice.Clear(Color.SlateGray);
                     spriteBatch.Begin();
                     spriteBatch.Draw(deathTex, deathRec, Color.White);
+                    spriteBatch.Draw(tex, pos, Color.White);
+                    btnQuit.Draw(spriteBatch);
+                    spriteBatch.End();
+                    break;
+                case Scene.Win:
+                    GraphicsDevice.Clear(Color.White);
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(winTex, rec, Color.White);
                     spriteBatch.Draw(tex, pos, Color.White);
                     btnQuit.Draw(spriteBatch);
                     spriteBatch.End();

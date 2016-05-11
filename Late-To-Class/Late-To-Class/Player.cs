@@ -51,6 +51,11 @@ namespace Late_To_Class
             get { return tex; }
         }
 
+        public Vector2 Posistion
+        {
+            get { return position; }
+            set { position = value; }
+        }
         enum playerStates
         {
             Run,
