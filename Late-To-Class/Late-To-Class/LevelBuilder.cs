@@ -211,7 +211,7 @@ namespace Late_To_Class
                     {
                         position = new Rectangle(x * tileSize.X, y * tileSize.Y, tileSize.X, tileSize.Y);
 
-                        if (position.X < CameraOrigin.X + screen.X + tileSize.X && position.X >= CameraOrigin.X && position.Y < CameraOrigin.Y + screen.Y + tileSize.Y && position.Y >= CameraOrigin.Y)
+                        //if (position.X < CameraOrigin.X + screen.X + tileSize.X && position.X >= CameraOrigin.X && position.Y < CameraOrigin.Y + screen.Y + tileSize.Y && position.Y >= CameraOrigin.Y)
                             spriteBatch.Draw(tileSheet, position, Source[y, x], Color.White);
                     }
                 }

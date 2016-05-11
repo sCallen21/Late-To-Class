@@ -20,6 +20,7 @@ namespace Late_To_Class
         private double dTimer;
         string cameraNotes = "Stephen";
         const int difficulty = 200;
+        List<PowerUp> powerUps = new List<PowerUp>();
        
 
         public static LevelManager Instance
@@ -48,7 +49,7 @@ namespace Late_To_Class
             LevelBuilder.Instance.SpawnMaker();
             camera = new Camera(newViewport);
             this.player = player;
-            player.position = new Vector2(LevelBuilder.Instance.PlayerPosition.X, LevelBuilder.Instance.PlayerPosition.Y);
+            player.drawnTex = new Rectangle(LevelBuilder.Instance.PlayerPosition.X, LevelBuilder.Instance.PlayerPosition.Y, 66, 66);
 
             foreach(Point cluster in LevelBuilder.Instance.NPCSpawnPositions)
             {
@@ -58,9 +59,12 @@ namespace Late_To_Class
             {
                 //CampoBuilder.CreateSpawn(guard);
             }
+            powerUps.Clear();
             foreach(Point powerUp in LevelBuilder.Instance.PowerUpPositions)
             {
-                //Powers.CreateSpawn(powerUp);
+                PowerUp Power = new PowerUp();
+                Power.CreateSpawn(powerUp, Content);
+                powerUps.Add(Power);
             }
             dTimer = (LevelBuilder.Instance.MapSize.X * LevelBuilder.Instance.MapSize.Y) / difficulty * (1 / 1); //replace 1/1 with 1/level once multiple levels exist
 
@@ -78,9 +82,9 @@ namespace Late_To_Class
             camera.Update(player.position, LevelBuilder.Instance.MapSize.X * 32, LevelBuilder.Instance.MapSize.Y * 32);
             dTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             dTimer = (Math.Round(dTimer, 2));
-            CameraOrigin.X = camera.cameraView.X + player.speed;
+            CameraOrigin.X = camera.cameraView.X + (int)player.position.X;
             if (CameraOrigin.X < 0) { CameraOrigin.X = 0; }
-            CameraOrigin.Y = camera.cameraView.Y + player.speed;
+            CameraOrigin.Y = camera.cameraView.Y + (int)player.position.Y;
             cameraNotes = CameraOrigin.X.ToString() + ";" + CameraOrigin.Y.ToString();
 
 
