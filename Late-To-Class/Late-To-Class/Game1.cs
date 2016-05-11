@@ -11,6 +11,7 @@ namespace Late_To_Class
     /// </summary>
     public class Game1 : Game
     {
+        #region Variables
         //Base Game Types
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -40,9 +41,7 @@ namespace Late_To_Class
 
         //win 
         Texture2D winTex;
-        
-
-        
+              
         //death
         Texture2D deathTex;
         Rectangle deathRec;
@@ -58,13 +57,18 @@ namespace Late_To_Class
         //level details
         Player player;
         Point screen;
-       
+
+        #endregion
+
+        #region Constructors
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
+        #endregion
 
+        #region Initialize and Load
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -119,10 +123,9 @@ namespace Late_To_Class
             
             
             //Main Menu
-            string[] menuItems = { "Start Game", "Options", "End Game" };
+            string[] menuItems = { "Start Game", "Endless", "Options", "End Game" };
             menuComponent = new MenuComponent(this, spriteBatch, font, menuItems);
             menuTex = Content.Load<Texture2D>("Menu.png");
-
             Components.Add(menuComponent);
 
             //pause 
@@ -141,12 +144,9 @@ namespace Late_To_Class
 
             tex = Content.Load<Texture2D>("Mouse.PNG");
 
-            //wiin
-            winTex = Content.Load<Texture2D>("Wintex.png");
-
-            //Game
-            LevelManager.Instance.LoadLevel("Level.txt", "SpawnAndCollision.txt", Content, GraphicsDevice.Viewport, player);
-        }
+            //win
+            winTex = Content.Load<Texture2D>("Wintex.png");        
+        }     
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -156,7 +156,9 @@ namespace Late_To_Class
         {
             
         }
+        #endregion
 
+        #region Update
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -171,6 +173,7 @@ namespace Late_To_Class
 
             switch (activeScene)
             {
+                #region MainMenu
                 case Scene.MainMenu:
                     if (texRec.X + menuTex.Width <= 0)
                         texRec.X = texRecTwo.X + menuTex.Width;
@@ -192,15 +195,21 @@ namespace Late_To_Class
                                 activeScene = Scene.Game;
                                 break;
                             case 1:
-                                activeScene = Scene.Options;
+                                LevelManager.Instance.LoadEndless(Content, GraphicsDevice.Viewport, player);
+                                activeScene = Scene.Endless;
                                 break;
                             case 2:
+                                activeScene = Scene.Options;
+                                break;
+                            case 3:
                                 activeScene = Scene.Exit;
                                 break;
                         }
                     }
-
                     break;
+#endregion
+                  
+                #region Options
                 case Scene.Options:
 
                     if (SingleKeyPress(Keys.Enter))
@@ -290,16 +299,15 @@ namespace Late_To_Class
                     }
 
                     break;
+                #endregion
 
+                #region Game
                 case Scene.Game:
                     LevelManager.Instance.UpdateLevel(gameTime);
                     
                     if (LevelManager.Instance.Late()) { activeScene = Scene.Death; }
-<<<<<<< HEAD
-                    if (player.position.X == LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.MainMenu;}
-=======
-                    // if (player.position.X >= LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.Win;}
->>>>>>> 8411be78521a8dc1d5cb59d3221e7a4944a0f711
+                    if (player.position.X >= LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.MainMenu;}
+
 
                     //pause 
                     btnPlay.Color = new Color(255, 255, 255, 255);
@@ -312,7 +320,15 @@ namespace Late_To_Class
                     }
 
                     break;
+                #endregion
 
+                #region Endless
+                case Scene.Endless:
+                    
+                    break;
+                #endregion
+
+                #region PauseMenu
                 case Scene.Paused:
                     if (SingleKeyPress(Keys.P))
                     {
@@ -329,6 +345,9 @@ namespace Late_To_Class
                     btnPlay.Update(mouse);
                     btnQuit.Update(mouse);
                     break;
+                #endregion
+
+                #region Death
                 case Scene.Death:
                     if (btnQuit.isClicked)
                     {
@@ -336,6 +355,9 @@ namespace Late_To_Class
                     }
                     btnQuit.Update(mouse);
                     break;
+                #endregion
+
+                #region Win
                 case Scene.Win:
                     if (btnQuit.isClicked)
                     {
@@ -343,14 +365,19 @@ namespace Late_To_Class
                     }
                     btnQuit.Update(mouse);
                     break;
+                #endregion
 
+                #region Exit
                 case Scene.Exit:
                     Exit();
                     break;
+                #endregion
             }
             base.Update(gameTime);
         }
+        #endregion
 
+        #region Draw
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -409,8 +436,10 @@ namespace Late_To_Class
 
             }
         }
-            
 
+        #endregion
+
+        #region Helpers
         public bool SingleKeyPress(Keys k)
         {
             //gets the current keyboard state
@@ -424,5 +453,6 @@ namespace Late_To_Class
             previousKbState = kbState;
             return false;
         }
+        #endregion
     }
 }

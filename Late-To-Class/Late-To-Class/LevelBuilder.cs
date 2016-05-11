@@ -19,7 +19,7 @@ namespace Late_To_Class
         int[,] map;
         int[,] spawnMap;
         Texture2D tileSheet;
-        Rectangle[,] Source;
+        public Rectangle[,] Source;
         Rectangle[,] spawnSource;
         Rectangle position;
         public Point PlayerPosition;

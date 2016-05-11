@@ -11,18 +11,24 @@ namespace Late_To_Class
 {
     public sealed class LevelManager
     {
+        #region Variables
         private static LevelManager instance = null;
         private Texture2D tileSheet;
         private Texture2D timerBG; //looks like a blackboard, goes behind the timer
         private Camera camera;
+        private Rectangle[,] Source;
         Point CameraOrigin;
         Player player;
+        List<PowerUp> powerUps = new List<PowerUp>();
         private double dTimer;
         string cameraNotes = "Stephen";
-        const int difficulty = 200;
-        List<PowerUp> powerUps = new List<PowerUp>();
-       
+        #endregion
 
+        #region constants
+        const int difficulty = 200;
+        #endregion
+
+        #region Constructor
         public static LevelManager Instance
         {
             get
@@ -32,7 +38,10 @@ namespace Late_To_Class
                 return instance;
             }
         }
+        #endregion
 
+        #region MapType
+        #region Load
         /// <summary>
         /// Loads up a map level to play
         /// </summary>
@@ -70,8 +79,10 @@ namespace Late_To_Class
 
             timerBG = Content.Load<Texture2D>("timerBlackboard.png");
         }
+        #endregion
 
 
+        #region Update and Draw
         /// <summary>
         /// Updates everything in a map, the timer, the rendering, the player.
         /// </summary>
@@ -85,9 +96,7 @@ namespace Late_To_Class
             CameraOrigin.X = camera.cameraView.X + (int)player.position.X;
             if (CameraOrigin.X < 0) { CameraOrigin.X = 0; }
             CameraOrigin.Y = camera.cameraView.Y + (int)player.position.Y;
-            cameraNotes = CameraOrigin.X.ToString() + ";" + CameraOrigin.Y.ToString();
-
-
+            
         }
 
         /// <summary>
@@ -110,6 +119,52 @@ namespace Late_To_Class
             spriteBatch.End();
         }
 
+        #endregion
+        #endregion
+
+        #region EndlessType
+        public void LoadEndless(ContentManager Content, Viewport viewport, Player player)
+        {
+            tileSheet = Content.Load<Texture2D>("lvl1Tiles");
+            this.player = player;
+            player.position = new Vector2(100, 100);
+            dTimer = 0;
+            timerBG = Content.Load<Texture2D>("timerBlackboard.png");
+            LevelBuilder.Instance.TileMaker(tileSheet);
+            Source = LevelBuilder.Instance.Source;
+            Endless.Instance.LoadSource(Source);
+     
+        }
+
+        public void UpdateEndless(GameTime gameTime)
+        {
+            player.Update(gameTime);
+            camera.Update(player.position, int.MaxValue, int.MaxValue);
+            dTimer += gameTime.ElapsedGameTime.TotalSeconds;
+            dTimer = (Math.Round(dTimer, 2));
+            CameraOrigin.X += (int)player.position.X;
+            CameraOrigin.Y += (int)player.position.Y;
+            Endless.Instance.Update(player, gameTime);
+            
+
+        }
+
+        public void DrawEndless(SpriteBatch spriteBatch, Point screen, SpriteFont font)
+        {
+            //this spritebatch will follow the player as per camera.Transform
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
+            Endless.Instance.Draw(spriteBatch);
+            player.Draw(spriteBatch);
+            spriteBatch.End();
+            //this spritebatch will not follow the player, and will always be drawn where they say they'll be
+            spriteBatch.Begin();
+            spriteBatch.Draw(timerBG, new Rectangle(8, 13, 160, 80), Color.White);
+            spriteBatch.DrawString(font, dTimer.ToString(), new Vector2(20, 20), Color.White);
+            spriteBatch.End();
+        }
+        #endregion
+
+        #region Helpers
         /// <summary>
         /// used to determine if the timer has hit zero, ie LATE TO CLASS(roll credits)*ding*
         /// </summary>
@@ -119,6 +174,6 @@ namespace Late_To_Class
             if (dTimer <= 0) { return true; }
             else { return false; }
         }
-
+        #endregion
     }
 }
