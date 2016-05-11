@@ -49,7 +49,7 @@ namespace Late_To_Class
             foreach(List<Rectangle> column in visibleColumns)
                 foreach(Rectangle location in column)
                 {
-            spriteBatch.Draw(tile, ,);
+           // spriteBatch.Draw(tile, ,);
                 }
         }
 

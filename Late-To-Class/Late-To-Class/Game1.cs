@@ -306,7 +306,9 @@ namespace Late_To_Class
                     LevelManager.Instance.UpdateLevel(gameTime);
                     
                     if (LevelManager.Instance.Late()) { activeScene = Scene.Death; }
-                    if (player.position.X >= LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.MainMenu;}
+
+                   if (player.position.X >= LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.Win;}
+
 
 
                     //pause 
