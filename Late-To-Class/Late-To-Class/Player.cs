@@ -13,7 +13,7 @@ namespace Late_To_Class
     public class Player
     {
         public Rectangle drawnTex;
-        private Rectangle hitbox;
+        public Rectangle hitbox;
         private Texture2D tex;
         public Vector2 position;
         int playerHeight = 64;

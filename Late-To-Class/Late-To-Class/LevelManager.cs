@@ -58,7 +58,8 @@ namespace Late_To_Class
             LevelBuilder.Instance.SpawnMaker();
             camera = new Camera(newViewport);
             this.player = player;
-            player.drawnTex = new Rectangle(LevelBuilder.Instance.PlayerPosition.X, LevelBuilder.Instance.PlayerPosition.Y, 66, 66);
+            player.hitbox = new Rectangle(LevelBuilder.Instance.PlayerPosition.X, LevelBuilder.Instance.PlayerPosition.Y, 66, 66);
+            player.speed = 0;
 
             foreach(Point cluster in LevelBuilder.Instance.NPCSpawnPositions)
             {
