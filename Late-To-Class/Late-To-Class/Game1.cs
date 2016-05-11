@@ -295,11 +295,11 @@ namespace Late_To_Class
                     LevelManager.Instance.UpdateLevel(gameTime);
                     
                     if (LevelManager.Instance.Late()) { activeScene = Scene.Death; }
-<<<<<<< HEAD
-                    if (player.position.X == LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.MainMenu;}
-=======
-                    // if (player.position.X >= LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.Win;}
->>>>>>> 8411be78521a8dc1d5cb59d3221e7a4944a0f711
+
+                    //if (player.position.X == LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.MainMenu;}
+
+                    if (player.position.X >= LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.Win;}
+
 
                     //pause 
                     btnPlay.Color = new Color(255, 255, 255, 255);
