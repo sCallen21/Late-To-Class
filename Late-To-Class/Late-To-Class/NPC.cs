@@ -22,6 +22,7 @@ using Microsoft.Xna.Framework.Content;
          Vector2 vVelocity;
          AnimationHelper helper;
          int nPlayerHeight;
+         int moveSwitch;
          bool bDirRight;
          double timeCounter;
          Random movement;
@@ -33,6 +34,7 @@ using Microsoft.Xna.Framework.Content;
              bDirRight = true;
              vVelocity = Vector2.Zero;
              movement = new Random();
+             moveSwitch = 0;
          }
  
          public void SetContent(int body, int hair, int r, int g, int b, Texture2D builder)
@@ -48,16 +50,23 @@ using Microsoft.Xna.Framework.Content;
              vPosition += vVelocity;
              bodyPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, nPlayerHeight);
              hairPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, 32);
-             if (vVelocity.X != 0)
+             if (moveSwitch > 32)
              {
-                 UpdateMovement(gameTime, helper);
-                 vVelocity.X = movement.Next(-2, 3);
+                 if (vVelocity.X != 0)
+                 {
+                     UpdateMovement(gameTime, helper);
+                     vVelocity.X = movement.Next(-2, 3);
+                     
+                 }
+                 if (vVelocity.X < 0)
+                 {
+                     bDirRight = false;
+                 }
+                 else bDirRight = true;
+
+                 moveSwitch = 0;
              }
-             if (vVelocity.X < 0)
-             {
-                 bDirRight = false;
-             }
-             else bDirRight = true;
+             moveSwitch++;
  
          }
  
