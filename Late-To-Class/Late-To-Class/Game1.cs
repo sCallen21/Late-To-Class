@@ -183,8 +183,8 @@ namespace Late_To_Class
 
                     // 6. Incrementally move the rectangles to the left. 
                     // Optional: Swap X for Y if you want to scroll vertically.
-                    texRec.X -= 5;
-                    texRecTwo.X -= 5;
+                    texRec.X -= 3;
+                    texRecTwo.X -= 3;
 
                     if (SingleKeyPress(Keys.Enter))
                     {
@@ -429,16 +429,16 @@ namespace Late_To_Class
                     GraphicsDevice.Clear(Color.SlateGray);
                     spriteBatch.Begin();
                     spriteBatch.Draw(deathTex, deathRec, Color.White);
-                    spriteBatch.Draw(tex, pos, Color.White);
                     btnQuit.Draw(spriteBatch);
+                    spriteBatch.Draw(tex, pos, Color.White);
                     spriteBatch.End();
                     break;
                 case Scene.Win:
                     GraphicsDevice.Clear(Color.White);
                     spriteBatch.Begin();
                     spriteBatch.Draw(winTex, rec, Color.White);
-                    spriteBatch.Draw(tex, pos, Color.White);
                     btnQuit.Draw(spriteBatch);
+                    spriteBatch.Draw(tex, pos, Color.White);
                     spriteBatch.End();
                     break;
 

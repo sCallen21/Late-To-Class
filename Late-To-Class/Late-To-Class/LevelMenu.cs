@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Late_To_Class
 {
-    class MenuComponent:DrawableGameComponent
+    class LevelMenu:DrawableGameComponent
     {
         string[] menuItems;
         int selectedIndex;
@@ -39,7 +39,7 @@ namespace Late_To_Class
             }
         }
 
-        public MenuComponent(Game game,
+        public LevelMenu(Game game,
             SpriteBatch spriteBatch,
             SpriteFont spriteFont,
             string[] menuItems)
@@ -65,7 +65,7 @@ namespace Late_To_Class
 
             position = new Vector2(
                 250,
-                150 );
+                150);
         }
 
         public override void Initialize()
@@ -120,8 +120,6 @@ namespace Late_To_Class
                 location.Y += spriteFont.LineSpacing + 5;
             }
         }
-
- 
 
     }
 }
