@@ -52,6 +52,8 @@
     <Compile Include="LevelManager.cs" />
     <Compile Include="LevelMenu.cs" />
     <Compile Include="MenuComponet.cs" />
+    <Compile Include="NPC.cs" />
+    <Compile Include="NPCGenerator.cs" />
     <Compile Include="OptionComponet.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="GameControls.cs" />
