@@ -416,7 +416,7 @@ namespace Late_To_Class
                     btnQuit.Draw(spriteBatch);
                     //mouse debug
                     spriteBatch.Draw(tex, pos, Color.White);
-                    spriteBatch.DrawString(font, pos.ToString(), (new Vector2(10, 10)), Color.White);
+                    //spriteBatch.DrawString(font, pos.ToString(), (new Vector2(10, 10)), Color.White);
                     spriteBatch.End();
                     break;
                 case Scene.Death:
@@ -431,6 +431,8 @@ namespace Late_To_Class
                     GraphicsDevice.Clear(Color.White);
                     spriteBatch.Begin();
                     spriteBatch.Draw(winTex, rec, Color.White);
+                    spriteBatch.DrawString(font, (LevelManager.Instance.Timer + "s"), (new Vector2(330, 205)), Color.Red, 0f, new Vector2(0,0), .5f, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(font, PlayerGrade(), (new Vector2(550, 205)), Color.Red, 0f, new Vector2(0, 0), .5f, SpriteEffects.None, 0f);
                     btnQuit.Draw(spriteBatch);
                     spriteBatch.Draw(tex, pos, Color.White);
                     spriteBatch.End();
@@ -454,6 +456,31 @@ namespace Late_To_Class
             }
             previousKbState = kbState;
             return false;
+        }
+
+        public string PlayerGrade()
+        {
+            if (LevelManager.Instance.Timer <= 40 && LevelManager.Instance.Timer >= 30)
+            {
+                return "A";
+            }
+            if (LevelManager.Instance.Timer < 30 && LevelManager.Instance.Timer >= 20)
+            {
+                return "B";
+            }
+            if (LevelManager.Instance.Timer < 20 && LevelManager.Instance.Timer >= 15)
+            {
+                return "C";
+            }
+            if (LevelManager.Instance.Timer < 15 && LevelManager.Instance.Timer >= 10)
+            {
+                return "D";
+            }
+            if (LevelManager.Instance.Timer < 10 && LevelManager.Instance.Timer >= 0)
+            {
+                return "F";
+            }
+            return "F";
         }
         #endregion
     }

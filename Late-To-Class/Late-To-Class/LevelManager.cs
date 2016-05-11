@@ -175,6 +175,11 @@ namespace Late_To_Class
             if (dTimer <= 0) { return true; }
             else { return false; }
         }
+
+        public double Timer
+        {
+            get { return dTimer; }
+        }
         #endregion
     }
 }

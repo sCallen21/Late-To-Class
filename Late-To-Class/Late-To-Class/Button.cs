@@ -54,11 +54,17 @@ namespace Late_To_Class
                     isClicked = true;
                     color.A = 255;
                 }
-                else if (color.A < 255) {
+                else if (color.A < 255)
+                {
                     color.A += 1;
                 }
 
             }
+            else
+            {
+                color.A = 255;
+            }
+
 
         }
 
