@@ -25,7 +25,7 @@ namespace Late_To_Class
         public Point PlayerPosition;
         public Point GoalPosition;
         public List<Point> EnemySpawnPositions;
-        public List<Point> NPCSpawnPositions;
+        public List<Rectangle> NPCSpawnPositions;
         public List<Point> PowerUpPositions;
         Rectangle toDraw;
         Point tileSize;
@@ -102,7 +102,7 @@ namespace Late_To_Class
             try
             {
                 input = new StreamReader(sSpawnName);
-                NPCSpawnPositions = new List<Point>();
+                NPCSpawnPositions = new List<Rectangle>();
                 EnemySpawnPositions = new List<Point>();
                 PowerUpPositions = new List<Point>();
                 collisionBoxes = new List<Rectangle>();
@@ -157,7 +157,7 @@ namespace Late_To_Class
                             break; // Displaced Collision Case
                         case 2:  PlayerPosition = new Point(y * tileSize.X, x * tileSize.Y + 128);
                             break;//Player Spawn Location
-                        case 3:  NPCSpawnPositions.Add(new Point((x * tileSize.X), (tileSize.Y * y)));
+                        case 3:  NPCSpawnPositions.Add(new Rectangle((x * tileSize.X), (tileSize.Y * y), tileSize.X, tileSize.Y));
                             break; //NPC Spawn Locations
                         case 4: EnemySpawnPositions.Add(new Point((x * tileSize.X), (tileSize.Y * y)));
                             break; //Enemy Spawn Locations

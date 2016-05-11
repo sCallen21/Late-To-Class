@@ -20,6 +20,8 @@ namespace Late_To_Class
         Point CameraOrigin;
         Player player;
         List<PowerUp> powerUps = new List<PowerUp>();
+        NPCGenerator npcBuilder = new NPCGenerator();
+        List<Tuple<List<NPC>, Rectangle>> NPCHolder = new List<Tuple<List<NPC>, Rectangle>>();
         private double dTimer;
         string cameraNotes = "Stephen";
         #endregion
@@ -61,9 +63,9 @@ namespace Late_To_Class
             player.hitbox = new Rectangle(LevelBuilder.Instance.PlayerPosition.X, LevelBuilder.Instance.PlayerPosition.Y, 66, 66);
             player.speed = 0;
 
-            foreach(Point cluster in LevelBuilder.Instance.NPCSpawnPositions)
+            foreach(Rectangle cluster in LevelBuilder.Instance.NPCSpawnPositions)
             {
-                //npcBuilder.CreateSpawn(cluster);
+                NPCHolder.Add(new Tuple<List<NPC>, Rectangle>(npcBuilder.CreateSpawn(Content), cluster));
             }
             foreach(Point guard in LevelBuilder.Instance.EnemySpawnPositions)
             {
@@ -97,6 +99,16 @@ namespace Late_To_Class
             CameraOrigin.X = camera.cameraView.X + (int)player.position.X;
             if (CameraOrigin.X < 0) { CameraOrigin.X = 0; }
             CameraOrigin.Y = camera.cameraView.Y + (int)player.position.Y;
+            foreach(Tuple<List<NPC>,Rectangle> cluster in NPCHolder)
+             {
+                 if (camera.cameraView.Intersects(cluster.Item2))
+                 {
+                     foreach(NPC npc in cluster.Item1)
+                     {
+                         npc.Update(gameTime);
+                     }
+                 }
+             }
             
         }
 
@@ -112,6 +124,17 @@ namespace Late_To_Class
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             LevelBuilder.Instance.Draw(spriteBatch, screen, CameraOrigin);
             player.Draw(spriteBatch);
+            foreach (Tuple<List<NPC>, Rectangle> cluster in NPCHolder)
+             {
+                 if (camera.cameraView.Intersects(cluster.Item2))
+                 {
+                     foreach (NPC npc in cluster.Item1)
+                     {
+                         if (npc.bodyPosition.Intersects(camera.cameraView))
+                             npc.Draw(spriteBatch);
+                     }
+                 }
+             }
             spriteBatch.End();
             //this spritebatch will not follow the player, and will always be drawn where they say they'll be
             spriteBatch.Begin();

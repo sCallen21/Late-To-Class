@@ -224,6 +224,7 @@ namespace Late_To_Class
                                     Keys up = pressed[1];
                                     GameControls.Instance.ConfigureControls("jump", up);
                                     GameControls.Instance.SaveControls();
+                                    GameControls.Instance.LoadControls();
                                     OptionComponet.MenuItem[0] = up.ToString();
                                 }
                                 catch (Exception e)
@@ -240,6 +241,7 @@ namespace Late_To_Class
                                     Keys down = pressed[1];
                                     GameControls.Instance.ConfigureControls("duck", down);
                                     GameControls.Instance.SaveControls();
+                                    GameControls.Instance.LoadControls();
                                     OptionComponet.MenuItem[1] = down.ToString();
                                    
                                 }
@@ -255,6 +257,7 @@ namespace Late_To_Class
                                     Keys left = pressed[1];
                                     GameControls.Instance.ConfigureControls("moveLeft", left);
                                     GameControls.Instance.SaveControls();
+                                    GameControls.Instance.LoadControls();
                                     OptionComponet.MenuItem[2] = left.ToString();
                                 }
                                 catch (Exception e)
@@ -269,6 +272,7 @@ namespace Late_To_Class
                                     Keys right = pressed[1];
                                     GameControls.Instance.ConfigureControls("moveRight", right);
                                     GameControls.Instance.SaveControls();
+                                    GameControls.Instance.LoadControls();
                                     OptionComponet.MenuItem[3] = right.ToString();
                                 }
                                 catch (Exception e)
@@ -283,6 +287,7 @@ namespace Late_To_Class
                                     Keys powerUp = pressed[1];
                                     GameControls.Instance.ConfigureControls("powerUp", powerUp);
                                     GameControls.Instance.SaveControls();
+                                    GameControls.Instance.LoadControls();
                                     OptionComponet.MenuItem[4] = powerUp.ToString();
                                 }
                                 catch (Exception e)
@@ -292,6 +297,7 @@ namespace Late_To_Class
                                 break;
                             case 5:
                                 GameControls.Instance.SaveControls();
+                                GameControls.Instance.LoadControls();
                                 activeScene = Scene.MainMenu;
                                 break;
                         }
