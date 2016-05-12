@@ -20,6 +20,8 @@ namespace Late_To_Class
         //Menu State items
         MenuComponent menuComponent;
         Scene activeScene;
+        Rectangle textRec;
+        Texture2D textTex;
         //parallax menu
         Rectangle texRec;
         Rectangle texRecTwo;
@@ -127,6 +129,8 @@ namespace Late_To_Class
             menuComponent = new MenuComponent(this, spriteBatch, font, menuItems);
             menuTex = Content.Load<Texture2D>("Menu.png");
             Components.Add(menuComponent);
+            textRec = new Rectangle(200, 5, 450, 300);
+            textTex = Content.Load<Texture2D>("TexTitle.png");
 
             //pause 
             pausedTex = Content.Load<Texture2D>("Pause.png");
@@ -181,8 +185,6 @@ namespace Late_To_Class
                     if (texRecTwo.X + menuTex.Width <= 0)
                         texRecTwo.X = texRec.X + menuTex.Width;
 
-                    // 6. Incrementally move the rectangles to the left. 
-                    // Optional: Swap X for Y if you want to scroll vertically.
                     texRec.X -= 3;
                     texRecTwo.X -= 3;
 
@@ -398,8 +400,9 @@ namespace Late_To_Class
                 case Scene.MainMenu:
                     GraphicsDevice.Clear(Color.SlateGray);
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null);
-                    spriteBatch.Draw(menuTex, texRec, Color.White);
                     spriteBatch.Draw(menuTex, texRecTwo, Color.White);
+                    spriteBatch.Draw(menuTex, texRec, Color.White);
+                    spriteBatch.Draw(textTex, textRec, Color.White);
                     base.Draw(gameTime);
                     spriteBatch.End();
                     break;
