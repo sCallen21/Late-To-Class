@@ -27,9 +27,11 @@ namespace Late_To_Class
         {
             this.texture = texture;
             this.drawMode = drawMode;
+            
             //gets current spritebatch
             spriteBatch = (SpriteBatch)Game.Services.GetService(typeof(SpriteBatch));
-            //create  a rect. with the size and posistion of the image
+
+            //create  a rect. with the size and position of the image
             switch (drawMode)
             {
                 case DrawMode.Center:

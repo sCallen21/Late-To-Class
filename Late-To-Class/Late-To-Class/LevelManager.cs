@@ -26,7 +26,7 @@ namespace Late_To_Class
         string cameraNotes = "Stephen";
         #endregion
 
-        #region constants
+        #region Constants
         const int difficulty = 200;
         #endregion
 
@@ -65,7 +65,7 @@ namespace Late_To_Class
 
             foreach(Rectangle cluster in LevelBuilder.Instance.NPCSpawnPositions)
             {
-                NPCHolder.Add(new Tuple<List<NPC>, Rectangle>(npcBuilder.CreateSpawn(Content), cluster));
+               // NPCHolder.Add(new Tuple<List<NPC>, Rectangle>(npcBuilder.CreateSpawn(Content), cluster));
             }
             foreach(Point guard in LevelBuilder.Instance.EnemySpawnPositions)
             {

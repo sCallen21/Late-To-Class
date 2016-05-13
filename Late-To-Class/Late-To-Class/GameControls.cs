@@ -13,16 +13,26 @@ namespace Late_To_Class
     /// </summary>
     public sealed class GameControls
     {
-        private static GameControls instance = null;
+        #region Variables
+        private static GameControls instance = null; 
         StreamReader input = null;
+        
+        /// <summary>
+        /// default key values for first-time loadup
+        /// </summary>
         public Keys jumpKey = Keys.W;
         public Keys duckKey = Keys.S;
         public Keys moveLeft = Keys.A;
         public Keys moveRight = Keys.D;
         public Keys powerUpKey = Keys.J;
-        Keys[] conflicting = new Keys[5];
-                
 
+        /// <summary>
+        /// array holding all the keys, ensures that no two keys are set to the same input value
+        /// </summary>
+        Keys[] conflicting = new Keys[5];
+        #endregion
+
+        #region Constructor
         /// <summary>
         /// Creates and returns a single instance of the GameControls class
         /// </summary>
@@ -34,8 +44,9 @@ namespace Late_To_Class
                 return instance;
             }
         }
-        
+        #endregion
 
+        #region Load and Save
         /// <summary>
         /// Loads in the saved control scheme from a file
         /// </summary>
@@ -116,8 +127,9 @@ namespace Late_To_Class
                 }
             }
         }
+        #endregion
 
-
+        #region Helpers
         /// <summary>
         /// used with the control scheme option to enable player defined controls
         /// </summary>
@@ -190,12 +202,12 @@ namespace Late_To_Class
                     break;
             }
         }
-        //added this so i could get they keys
-        public Keys[] Conflitcting
+        //added this so i could get the keys
+        public Keys[] Conflicting
         {
             get { return conflicting; }
         }
     }
+        #endregion
 
-    
 }

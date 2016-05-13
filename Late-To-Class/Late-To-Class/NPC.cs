@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Content;
  {
      class NPC
      {
- 
+         #region Variables
          Rectangle hitBox;
          public Rectangle bodyPosition;
          Rectangle hairPosition;
@@ -26,8 +26,9 @@ using Microsoft.Xna.Framework.Content;
          bool bDirRight;
          double timeCounter;
          Random movement;
- 
- 
+         #endregion
+
+         #region Constructor
          public NPC()
          {
              helper = new AnimationHelper(3, 3);
@@ -36,7 +37,9 @@ using Microsoft.Xna.Framework.Content;
              movement = new Random();
              moveSwitch = 0;
          }
- 
+         #endregion
+
+         #region Load
          public void SetContent(int body, int hair, int r, int g, int b, Texture2D builder)
          {
              this.image = builder;
@@ -44,7 +47,9 @@ using Microsoft.Xna.Framework.Content;
              BodySource = new Rectangle(0, 32 + (nPlayerHeight * body), image.Width, nPlayerHeight);
              hairTint = new Color(r, g, b);
          }
- 
+#endregion
+
+         #region Update and Draw
          public void Update(GameTime gameTime)
          {
              vPosition += vVelocity;
@@ -131,7 +136,6 @@ using Microsoft.Xna.Framework.Content;
                  timeCounter -= ah.SPF;
              }
          }
- 
-     }
- 
+#endregion
+     } 
  } 

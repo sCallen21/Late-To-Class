@@ -12,27 +12,36 @@ namespace Late_To_Class
     /// basic camera that is locked to the player and follows him across the screen, while within the bounds of the map
     /// </summary>
    public class Camera
-    {
-        private Matrix transform;
-        private Vector2 centre;
-        private Viewport viewport;
-        public Rectangle cameraView;
-        
+   {
+       #region Variables
+       Matrix transform;
+       Vector2 centre;
+       Viewport viewport;
+       public Rectangle cameraView;
+       #endregion
 
-        
-
-        public Matrix Transform
+       #region Properties
+       public Matrix Transform
         {
             get { return transform; }
         }
+       #endregion
 
+       #region Constructors
        public Camera(Viewport newViewport)
         {
             viewport = newViewport;
             cameraView = new Rectangle(0, 0, viewport.Width, viewport.Height);
         }
+       #endregion
 
-        //faffs around with the camera position based on the player position and the size(in pixels) of the screen
+       #region Update
+       /// <summary>
+       /// Controls the Camera, so that the player is always on screen no matter where they go in the map
+       /// </summary>
+       /// <param name="position"></param>
+       /// <param name="xOffset"></param>
+       /// <param name="yOffset"></param>
        public void Update(Vector2 position, int xOffset, int yOffset)
        {
            if (position.X < viewport.Width / 2) { centre.X = viewport.Width / 2; }
@@ -48,9 +57,7 @@ namespace Late_To_Class
            //actually moves the camera
            transform = Matrix.CreateTranslation(new Vector3(-centre.X + (viewport.Width / 2),
                                                               -centre.Y + (viewport.Height / 2), 0));
-
-            
-
        }
-    }
+       #endregion
+   }
 }

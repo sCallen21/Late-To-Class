@@ -11,16 +11,31 @@ namespace Late_To_Class
 {
     class PowerUp
     {
+        #region Variables
         Texture2D texture;
         Rectangle hitBox;
         PowerUp powerUp;
+        #endregion
 
-        
+        #region Load
         public void LoadTexture(int LoadType, ContentManager Content)
         {
             texture = Content.Load<Texture2D>("PowerUp" + LoadType);
         }
+        #endregion
 
+        #region Update
+        public void Update()
+        {
+            KeyboardState kbState = Keyboard.GetState();
+            if (kbState.IsKeyDown(GameControls.Instance.powerUpKey))
+            {
+                powerUp.Update();
+            }
+        }
+        #endregion
+
+        #region Helpers
         public void CreateSpawn(Point spawnLocation, ContentManager Content)
         {
             Random rand = new Random();
@@ -38,14 +53,6 @@ namespace Late_To_Class
                     break;
             }
         }
-
-        public void Update()
-        {
-            KeyboardState kbState = Keyboard.GetState(); 
-            if(kbState.IsKeyDown(GameControls.Instance.powerUpKey))
-            {
-                powerUp.Update();
-            }
-        }
+        #endregion       
     }
 }
