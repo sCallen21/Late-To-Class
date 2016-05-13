@@ -78,8 +78,8 @@ namespace Late_To_Class
             pState = playerStates.Stand;
             dirRight = true;
             drawnTex = new Rectangle(0, 0, 66, 66);
-            hitbox = new Rectangle(drawnTex.X + (drawnTex.Width / 4), drawnTex.Y, drawnTex.Width / 2, drawnTex.Height);
-            jumpHeight = drawnTex.Y;
+            hitbox = new Rectangle(drawnTex.X + (drawnTex.Width / 4), drawnTex.Y + (int)(drawnTex.Height * (7/8)), drawnTex.Width / 2, (drawnTex.Height / 8));
+            jumpHeight = 0;
             position = new Vector2(hitbox.X, hitbox.Y);
 
 
@@ -136,15 +136,6 @@ namespace Late_To_Class
                     }
                     else
                     {
-                        if (jumpHeight < 0 && dirRight == true)
-                        {
-                            hitbox.X += speed;
-                        }
-                        else if (jumpHeight < 0 && dirRight == false)
-                        {
-                            hitbox.X -= speed;
-                        }
-
                         hitbox.Y = LevelBuilder.Instance.collisionBoxes[i].Top - hitbox.Height;
                         jumpHeight = 0;
                     }
@@ -265,11 +256,15 @@ namespace Late_To_Class
                         pState = playerStates.Slide;
                     }
 
-                    if (kbState.IsKeyDown(jumpKey))
+                    for(int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
                     {
-                        jumpHeight = -20;
-                        pState = playerStates.Jump;
+                        if (kbState.IsKeyDown(jumpKey) && (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]) || hitbox.Bottom == LevelBuilder.Instance.collisionBoxes[i].Top))
+                        {
+                            jumpHeight = -15;
+                            pState = playerStates.Jump;
+                        }
                     }
+
 
                     //this checks to see what direction the player is moving, and then adds the speed accordingly
                     if (dirRight)
@@ -309,21 +304,6 @@ namespace Late_To_Class
                         pState = playerStates.Jump;
                     }
 
-                    for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
-                    {
-                        if (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]))
-                        {
-                            if (hitbox.Right > LevelBuilder.Instance.collisionBoxes[i].Left && (hitbox.Right - hitbox.Width / 2) <= LevelBuilder.Instance.collisionBoxes[i].Left)
-                            {
-                                hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Left - drawnTex.Width;
-                            }
-                            else if (hitbox.Left < LevelBuilder.Instance.collisionBoxes[i].Right && (hitbox.Left + hitbox.Width / 2) >= LevelBuilder.Instance.collisionBoxes[i].Right)
-                            {
-                                hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Right;
-                            }
-                        }
-                    }
-
                     if (kbState.IsKeyDown(duckKey))
                     {
                         pState = playerStates.Duck;
@@ -333,16 +313,10 @@ namespace Late_To_Class
                     break;
 
 
-
-
-
-
                 case playerStates.Jump: //http://flatformer.blogspot.com/2010/02/making-character-jump-in-xnac-basic.html
                     UpdateAnimation(gameTime, allAnims["jump"]);
                     if (jumping == true)
                     {
-                        //jumpHeight = -20;
-                        //drawnTex.Y += (int)jumpHeight;
                         position.Y += (int)jumpHeight;
 
                         if (kbState.IsKeyUp(jumpKey))
@@ -354,12 +328,10 @@ namespace Late_To_Class
                         if (kbState.IsKeyDown(leftKey))
                         {
                             dirRight = false;
-                            //pos.X -= 4;
                         }
                         else if (kbState.IsKeyDown(rightKey))
                         {
                             dirRight = true;
-                            //pos.X += 4;
                         }
 
                         //this decelerates the player while jumping
@@ -451,7 +423,7 @@ namespace Late_To_Class
                     {
                         if (accTimer >= timeToNextDec)
                         {
-                            speed--;
+                            speed --;
                             accTimer = 0;
                         }
 
