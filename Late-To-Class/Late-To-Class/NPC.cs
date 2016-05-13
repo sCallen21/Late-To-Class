@@ -1,18 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
- using Microsoft.Xna.Framework.Graphics;
- using System;
- using System.Collections.Generic;
- using System.Linq;
- using System.Text;
- 
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+ //Chris Banks
  namespace Late_To_Class
  {
      class NPC
      {
          #region Variables
          Rectangle hitBox;
-         public Rectangle bodyPosition;
          Rectangle hairPosition;
          Rectangle BodySource;
          Rectangle HairSource;
@@ -22,10 +22,11 @@ using Microsoft.Xna.Framework.Content;
          Vector2 vVelocity;
          AnimationHelper helper;
          int nPlayerHeight;
-         int moveSwitch;
+         int nMoveSwitch;
          bool bDirRight;
-         double timeCounter;
+         double dTimeCounter;
          Random movement;
+         public Rectangle bodyPosition;
          #endregion
 
          #region Constructor
@@ -35,7 +36,7 @@ using Microsoft.Xna.Framework.Content;
              bDirRight = true;
              vVelocity = Vector2.Zero;
              movement = new Random();
-             moveSwitch = 0;
+             nMoveSwitch = 0;
          }
          #endregion
 
@@ -55,7 +56,7 @@ using Microsoft.Xna.Framework.Content;
              vPosition += vVelocity;
              bodyPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, nPlayerHeight);
              hairPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, 32);
-             if (moveSwitch > 32)
+             if (nMoveSwitch > 32)
              {
                  if (vVelocity.X != 0)
                  {
@@ -69,9 +70,9 @@ using Microsoft.Xna.Framework.Content;
                  }
                  else bDirRight = true;
 
-                 moveSwitch = 0;
+                 nMoveSwitch = 0;
              }
-             moveSwitch++;
+             nMoveSwitch++;
  
          }
  
@@ -122,9 +123,9 @@ using Microsoft.Xna.Framework.Content;
  
          public void UpdateMovement(GameTime gameTime, AnimationHelper ah)
          {
-             timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
+             dTimeCounter += gameTime.ElapsedGameTime.TotalSeconds;
  
-             if (timeCounter >= ah.SPF)
+             if (dTimeCounter >= ah.SPF)
              {
                  ah.CurrentFrame++;
  
@@ -133,7 +134,7 @@ using Microsoft.Xna.Framework.Content;
                      ah.CurrentFrame = 0;
                  }
  
-                 timeCounter -= ah.SPF;
+                 dTimeCounter -= ah.SPF;
              }
          }
 #endregion

@@ -7,23 +7,23 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 
+//Chris Banks
 namespace Late_To_Class
 {
     public sealed class LevelManager
     {
         #region Variables
         private static LevelManager instance = null;
-        private Texture2D tileSheet;
-        private Texture2D timerBG; //looks like a blackboard, goes behind the timer
-        private Camera camera;
-        private Rectangle[,] Source;
+        Texture2D tileSheet;
+        Texture2D timerBG; //looks like a blackboard, goes behind the timer
+        Camera camera;
+        Rectangle[,] Source;
         Point CameraOrigin;
         Player player;
-        List<PowerUp> powerUps = new List<PowerUp>();
         NPCGenerator npcBuilder = new NPCGenerator();
+        List<PowerUp> powerUps = new List<PowerUp>();
         List<Tuple<List<NPC>, Rectangle>> NPCHolder = new List<Tuple<List<NPC>, Rectangle>>();
-        private double dTimer;
-        string cameraNotes = "Stephen";
+        double dTimer;
         #endregion
 
         #region Constants

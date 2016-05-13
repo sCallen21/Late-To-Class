@@ -14,9 +14,9 @@ namespace Late_To_Class
     public sealed class GameControls
     {
         #region Variables
-        private static GameControls instance = null; 
+        static GameControls instance = null;
         StreamReader input = null;
-        
+
         /// <summary>
         /// default key values for first-time loadup
         /// </summary>
@@ -29,7 +29,7 @@ namespace Late_To_Class
         /// <summary>
         /// array holding all the keys, ensures that no two keys are set to the same input value
         /// </summary>
-        Keys[] conflicting = new Keys[5];
+        public Keys[] conflicting = new Keys[5];
         #endregion
 
         #region Constructor
@@ -111,17 +111,17 @@ namespace Late_To_Class
             {
                 output = new StreamWriter("controls.txt");
                 string sControls = (int)jumpKey + ";" + (int)duckKey + ";" + (int)moveLeft + ";" + (int)moveRight + ";" + (int)powerUpKey;
-                output.WriteLine(sControls);                
+                output.WriteLine(sControls);
             }
 
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
 
             finally
             {
-                if(output != null)
+                if (output != null)
                 {
                     output.Close();
                 }
@@ -202,12 +202,6 @@ namespace Late_To_Class
                     break;
             }
         }
-        //added this so i could get the keys
-        public Keys[] Conflicting
-        {
-            get { return conflicting; }
-        }
-    }
         #endregion
-
+    }       
 }

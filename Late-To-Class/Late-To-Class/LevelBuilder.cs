@@ -20,17 +20,17 @@ namespace Late_To_Class
         int[,] map;
         int[,] spawnMap;
         Texture2D tileSheet;
-        public Rectangle[,] Source;
         Rectangle[,] spawnSource;
         Rectangle position;
+        Rectangle toDraw;
+        Point tileSize;
+        public Rectangle[,] Source;
+        public Point MapSize;
         public Point PlayerPosition;
         public Point GoalPosition;
         public List<Point> EnemySpawnPositions;
         public List<Rectangle> NPCSpawnPositions;
         public List<Point> PowerUpPositions;
-        Rectangle toDraw;
-        Point tileSize;
-        public Point MapSize;
         public List<Rectangle> collisionBoxes;
         #endregion
 

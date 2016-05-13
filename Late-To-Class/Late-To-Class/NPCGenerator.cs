@@ -6,6 +6,7 @@ using System;
  using System.Linq;
  using System.Text;
  
+//Chris Banks
  namespace Late_To_Class
  {
      class NPCGenerator
@@ -21,7 +22,7 @@ using System;
          public List<NPC> CreateSpawn(ContentManager Content)
          {
              this.Content = Content;
-           //  builder = Content.Load<Texture2D>("NPCSheet");
+             builder = Content.Load<Texture2D>("NPCSheet");
              Random rand = new Random();
              int nClusterSize = rand.Next(1,6);
              for(int i = 0; i < nClusterSize; i++)

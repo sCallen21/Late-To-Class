@@ -14,7 +14,7 @@ namespace Late_To_Class
     {
         #region Variables
         Rectangle drawnTex;
-        Rectangle hitbox;
+        public Rectangle hitbox;
         Texture2D tex;
         public Vector2 position;
         int playerHeight = 64;

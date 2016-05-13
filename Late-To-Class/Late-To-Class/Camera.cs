@@ -15,7 +15,7 @@ namespace Late_To_Class
    {
        #region Variables
        Matrix transform;
-       Vector2 centre;
+       Vector2 vCentre;
        Viewport viewport;
        public Rectangle cameraView;
        #endregion
@@ -44,19 +44,19 @@ namespace Late_To_Class
        /// <param name="yOffset"></param>
        public void Update(Vector2 position, int xOffset, int yOffset)
        {
-           if (position.X < viewport.Width / 2) { centre.X = viewport.Width / 2; }
-           else if (position.X > xOffset - (viewport.Width / 2)) { centre.X = xOffset - viewport.Width / 2; }
-           else { centre.X = position.X; }
+           if (position.X < viewport.Width / 2) { vCentre.X = viewport.Width / 2; }
+           else if (position.X > xOffset - (viewport.Width / 2)) { vCentre.X = xOffset - viewport.Width / 2; }
+           else { vCentre.X = position.X; }
 
-           if (position.Y < viewport.Height / 2) { centre.Y = viewport.Height / 2; }
-           else if (position.Y > yOffset - (viewport.Height / 2)) { centre.Y = yOffset - viewport.Height / 2; }
-           else { centre.Y = position.Y; }
+           if (position.Y < viewport.Height / 2) { vCentre.Y = viewport.Height / 2; }
+           else if (position.Y > yOffset - (viewport.Height / 2)) { vCentre.Y = yOffset - viewport.Height / 2; }
+           else { vCentre.Y = position.Y; }
 
            cameraView = new Rectangle((int)position.X - viewport.Width / 2, (int)position.Y - viewport.Height / 2, viewport.Width, viewport.Height);
 
            //actually moves the camera
-           transform = Matrix.CreateTranslation(new Vector3(-centre.X + (viewport.Width / 2),
-                                                              -centre.Y + (viewport.Height / 2), 0));
+           transform = Matrix.CreateTranslation(new Vector3(-vCentre.X + (viewport.Width / 2),
+                                                              -vCentre.Y + (viewport.Height / 2), 0));
        }
        #endregion
    }

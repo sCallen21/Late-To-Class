@@ -86,7 +86,6 @@ namespace Late_To_Class
             texRec = new Rectangle(0, 0, 1500, 600);
             texRecTwo = new Rectangle(1500, 0, 1500, 600);
  
-
             base.Initialize();
         }
 
@@ -96,25 +95,22 @@ namespace Late_To_Class
         /// </summary>
         protected override void LoadContent()
         {
-            //Full Game Content - This section is for content the entire game needs
-
-            //graphics.IsFullScreen = true;
-            //graphics.ApplyChanges();
-            
+            #region FullGame Content
+            //Full Game Content - This section is for content the entire game needs        
             rec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("Tahoma_40");
             screen.X = GraphicsDevice.Viewport.Width;
             screen.Y = GraphicsDevice.Viewport.Height;
             player.Load(Content);
+            #endregion
 
-
-            //help menu - TODO - replace with options menu
+            #region Options Menu
             helpForegroundTexture = Content.Load<Texture2D>("HelpTex.png");
             GameControls.Instance.LoadControls();
             string[] OptionItems = new string[6];
             Keys[] controls = new Keys[5];
-            GameControls.Instance.Conflitcting.CopyTo(controls, 0);
+            GameControls.Instance.conflicting.CopyTo(controls, 0);
             for (int i = 0; i < controls.Length; i++)
             {
                 OptionItems[i] = controls[i].ToString();
@@ -122,34 +118,38 @@ namespace Late_To_Class
             OptionItems[5] = "Exit";
             OptionComponet = new OptionComponet(this, spriteBatch, font, OptionItems);
             Components.Add(OptionComponet);
-            
-            
-            //Main Menu
+            #endregion
+
+            #region Main Menu
             string[] menuItems = { "Start Game", "Endless", "Options", "End Game" };
             menuComponent = new MenuComponent(this, spriteBatch, font, menuItems);
             menuTex = Content.Load<Texture2D>("Menu.png");
             Components.Add(menuComponent);
             textRec = new Rectangle(200, 5, 450, 300);
             textTex = Content.Load<Texture2D>("TexTitle.png");
+            #endregion
 
-            //pause 
+            #region Pause Menu
             pausedTex = Content.Load<Texture2D>("Pause.png");
             pausedRec = new Rectangle(100, 0, pausedTex.Width, pausedTex.Height);
             btnPlay = new Button();
             btnQuit = new Button();
-            playTex = Content.Load<Texture2D>("Quit.jpg");
-            btnPlay.load(playTex, new Vector2(350, 225));
-            quitTex = Content.Load<Texture2D>("Play.jpg");
-            btnQuit.load(quitTex, new Vector2(350, 275));
+            playTex = Content.Load<Texture2D>("Play.jpg");
+            btnPlay.Load(playTex, new Vector2(350, 225));
+            quitTex = Content.Load<Texture2D>("Quit.jpg");
+            btnQuit.Load(quitTex, new Vector2(350, 275));
+            #endregion
 
+            #region Death Screen
             //death
             deathTex = Content.Load<Texture2D>("Death.png");
             deathRec = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-
             tex = Content.Load<Texture2D>("Mouse.PNG");
+            #endregion
 
-            //win
-            winTex = Content.Load<Texture2D>("Wintex.png");        
+            #region Win Screen
+            winTex = Content.Load<Texture2D>("Wintex.png");
+            #endregion
         }     
 
         /// <summary>
@@ -317,8 +317,6 @@ namespace Late_To_Class
 
                    if (player.position.X >= LevelBuilder.Instance.GoalPosition.X) { activeScene = Scene.Win;}
 
-
-
                     //pause 
                     btnPlay.Color = new Color(255, 255, 255, 255);
                     btnQuit.Color = new Color(255, 255, 255, 255);
@@ -423,9 +421,7 @@ namespace Late_To_Class
                     spriteBatch.Draw(pausedTex, pausedRec, Color.White);
                     btnPlay.Draw(spriteBatch);
                     btnQuit.Draw(spriteBatch);
-                    //mouse debug
                     spriteBatch.Draw(tex, pos, Color.White);
-                    //spriteBatch.DrawString(font, pos.ToString(), (new Vector2(10, 10)), Color.White);
                     spriteBatch.End();
                     break;
                 case Scene.Death:
