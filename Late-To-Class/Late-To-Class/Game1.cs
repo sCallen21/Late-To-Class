@@ -125,8 +125,8 @@ namespace Late_To_Class
             menuComponent = new MenuComponent(this, spriteBatch, font, menuItems);
             menuTex = Content.Load<Texture2D>("Menu.png");
             Components.Add(menuComponent);
-            textRec = new Rectangle(200, 5, 450, 300);
             textTex = Content.Load<Texture2D>("TexTitle.png");
+            textRec = new Rectangle(200, 5, textTex.Width, 150);
             #endregion
 
             #region Pause Menu
