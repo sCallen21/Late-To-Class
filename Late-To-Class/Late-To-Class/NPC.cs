@@ -22,6 +22,7 @@ using Microsoft.Xna.Framework.Content;
          Vector2 vVelocity;
          AnimationHelper helper;
          int nPlayerHeight;
+         int bodyType;
          int moveSwitch;
          bool bDirRight;
          double timeCounter;
@@ -30,18 +31,20 @@ using Microsoft.Xna.Framework.Content;
  
          public NPC()
          {
-             helper = new AnimationHelper(3, 3);
+             helper = new AnimationHelper(4, 4);
              bDirRight = true;
              vVelocity = Vector2.Zero;
              movement = new Random();
              moveSwitch = 0;
+             nPlayerHeight = 64;
          }
  
          public void SetContent(int body, int hair, int r, int g, int b, Texture2D builder)
          {
              this.image = builder;
-             HairSource = new Rectangle(1 * hair, 0, 32, 32);
-             BodySource = new Rectangle(0, 32 + (nPlayerHeight * body), image.Width, nPlayerHeight);
+             bodyType = body;
+             HairSource = new Rectangle(25 * hair, 3 * nPlayerHeight, 25, 64);
+             BodySource = new Rectangle(helper.CurrentFrame * 25, (nPlayerHeight * bodyType), 25, nPlayerHeight);
              hairTint = new Color(r, g, b);
          }
  
@@ -50,7 +53,8 @@ using Microsoft.Xna.Framework.Content;
              vPosition += vVelocity;
              bodyPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, nPlayerHeight);
              hairPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, 32);
-             if (moveSwitch > 32)
+            BodySource = new Rectangle(helper.CurrentFrame * 25, (nPlayerHeight * bodyType), 25, nPlayerHeight);
+            if (moveSwitch > 32)
              {
                  if (vVelocity.X != 0)
                  {
@@ -88,12 +92,12 @@ using Microsoft.Xna.Framework.Content;
              bodyRectangle.Width = 32;
              if (bDirRight)
              {
-                 spriteBatch.Draw(image, bodyPosition, bodyRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                 spriteBatch.Draw(image, bodyPosition, BodySource, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
                  spriteBatch.Draw(image, bodyPosition, HairSource, hairTint, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
              }
              else
             {
-                 spriteBatch.Draw(image, bodyPosition, bodyRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
+                 spriteBatch.Draw(image, bodyPosition, BodySource, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
                  spriteBatch.Draw(image, bodyPosition, HairSource, hairTint, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
              }
          }

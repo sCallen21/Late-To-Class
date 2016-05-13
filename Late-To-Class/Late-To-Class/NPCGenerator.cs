@@ -18,7 +18,7 @@ using System;
         public List<NPC> CreateSpawn(ContentManager Content)
          {
              this.Content = Content;
-             builder = Content.Load<Texture2D>("NPCSheet");
+             builder = Content.Load<Texture2D>("NPCS");
              Random rand = new Random();
              int nClusterSize = rand.Next(1,6);
              for(int i = 0; i < nClusterSize; i++)
@@ -34,8 +34,8 @@ using System;
          public void Create(NPC human)
         {
             Random rand = new Random();
-            int nHairStyle = rand.Next(0, 4);
-            int nBodyStle = rand.Next(0, 6);
+            int nHairStyle = rand.Next(0, 5);
+            int nBodyStle = rand.Next(0, 4);
             int red = rand.Next(0, 256);
             int green = rand.Next(0, 256);
             int blue = rand.Next(0, 256);
