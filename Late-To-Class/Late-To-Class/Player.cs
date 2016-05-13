@@ -12,27 +12,17 @@ namespace Late_To_Class
 {
     public class Player
     {
-        public Rectangle drawnTex;
+        #region Variables
+        Rectangle drawnTex;
         public Rectangle hitbox;
-        private Texture2D tex;
+        Texture2D tex;
         public Vector2 position;
         int playerHeight = 64;
         int playerWidth = 64;
-
-
-        private double jumpHeight;
-
-
-
-        /// <summary>
-        /// Keys for all user input, set by default to W,A,D,S,J
-        /// </summary>
-        private Keys jumpKey;
-        private Keys leftKey;
-        private Keys rightKey;
-        private Keys duckKey;
-        private Keys powerUpKey;
-
+        double jumpHeight;
+        bool dirRight; //bool indicating facing direction with right == true
+        bool jumping;
+                      
         //these variables handle acceleration of the player
         public int speed; //determines how fast the player is moving. This value increases as the player continues to move.
         private int maxSpeed; //determines the player's max speed
@@ -44,7 +34,9 @@ namespace Late_To_Class
         Rectangle sourceRec; //this rectangle defines the portion of the texture it should grab.
         Dictionary<string, AnimationHelper> allAnims; //holds all animationhelpers for player
         double timeCounter; //counts ticks of the gametime
+        #endregion
 
+        #region Properties
         public Texture2D Tex
         {
             set { tex = value; }
@@ -64,14 +56,11 @@ namespace Late_To_Class
             Duck,
             Slide
         }
-
         playerStates pState;
         playerStates prevState; //this records the state the player had on the previous state
+        #endregion
 
-
-        bool dirRight; //bool indicating facing direction with right == true
-        bool jumping;
-
+        #region Constructors
         public Player()
         {
 
@@ -91,23 +80,23 @@ namespace Late_To_Class
             timeToNextDec = 0.05; //how long it takes to decrement speed
 
             //controls stuff
-            jumpKey = GameControls.Instance.jumpKey;
-            leftKey = GameControls.Instance.moveLeft;
-            rightKey = GameControls.Instance.moveRight;
-            duckKey = GameControls.Instance.duckKey;
-            powerUpKey = GameControls.Instance.powerUpKey;
+           
 
             //animation stuff
             allAnims = new Dictionary<string, AnimationHelper>();
             allAnims.Add("run", new AnimationHelper(5, 10));
             allAnims.Add("jump", new AnimationHelper(12, 10));
         }
+        #endregion
 
+        #region Load
         public void Load(ContentManager Content)
         {
             tex = Content.Load<Texture2D>("player");
         }
+        #endregion
 
+        #region Update
         public void Update(GameTime gameTime)
         {
             KeyboardState kbState = Keyboard.GetState();
@@ -151,7 +140,7 @@ namespace Late_To_Class
             {
                 case playerStates.Run:
                     UpdateAnimation(gameTime, allAnims["run"]);
-                    if (kbState.IsKeyDown(leftKey) && (dirRight == true || dirRight == false)) //running left
+                    if (kbState.IsKeyDown(GameControls.Instance.moveLeft) && (dirRight == true || dirRight == false)) //running left
                     {
                         dirRight = false;
 
@@ -181,7 +170,7 @@ namespace Late_To_Class
                         accTimer += gameTime.ElapsedGameTime.TotalSeconds;
                     }
 
-                    if (kbState.IsKeyDown(rightKey) && (dirRight == true || dirRight == false)) //running right
+                    if (kbState.IsKeyDown(GameControls.Instance.moveRight) && (dirRight == true || dirRight == false)) //running right
                     {
                         dirRight = true;
 
@@ -212,7 +201,7 @@ namespace Late_To_Class
                         accTimer += gameTime.ElapsedGameTime.TotalSeconds;
                     }
 
-                    if (kbState.IsKeyUp(leftKey) && kbState.IsKeyUp(rightKey) /*&& dirRight == true*/) //not running.
+                    if (kbState.IsKeyUp(GameControls.Instance.moveLeft) && kbState.IsKeyUp(GameControls.Instance.moveRight) /*&& dirRight == true*/) //not running.
                     {
                         if (speed > 0)
                         {
@@ -230,7 +219,7 @@ namespace Late_To_Class
                             pState = playerStates.Stand;
                     }
 
-                    if (kbState.IsKeyDown(leftKey) && kbState.IsKeyDown(rightKey)) //if both keys are pressed
+                    if (kbState.IsKeyDown(GameControls.Instance.moveLeft) && kbState.IsKeyDown(GameControls.Instance.moveRight)) //if both keys are pressed
                     {
                         if (speed > 0)
                         {
@@ -251,14 +240,14 @@ namespace Late_To_Class
                         }
                     }
 
-                    if (kbState.IsKeyDown(duckKey))
+                    if (kbState.IsKeyDown(GameControls.Instance.duckKey))
                     {
                         pState = playerStates.Slide;
                     }
 
                     for(int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
                     {
-                        if (kbState.IsKeyDown(jumpKey) && (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]) || hitbox.Bottom == LevelBuilder.Instance.collisionBoxes[i].Top))
+                        if (kbState.IsKeyDown(GameControls.Instance.jumpKey) && (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]) || hitbox.Bottom == LevelBuilder.Instance.collisionBoxes[i].Top))
                         {
                             jumpHeight = -15;
                             pState = playerStates.Jump;
@@ -286,25 +275,42 @@ namespace Late_To_Class
                 case playerStates.Stand:
 
                     speed = 0;
-                    if (kbState.IsKeyDown(leftKey))
+                    if (kbState.IsKeyDown(GameControls.Instance.moveLeft))
                     {
                         //dirRight = false;
                         pState = playerStates.Run;
                     }
 
-                    if (kbState.IsKeyDown(rightKey))
+                    if (kbState.IsKeyDown(GameControls.Instance.moveRight))
                     {
                         //dirRight = false;
                         pState = playerStates.Run;
 
                     }
-                    if (kbState.IsKeyDown(jumpKey))
+                    if (kbState.IsKeyDown(GameControls.Instance.jumpKey))
                     {
-                        jumpHeight = -20;
+                        jumpHeight = -15;
                         pState = playerStates.Jump;
                     }
 
-                    if (kbState.IsKeyDown(duckKey))
+
+
+                    for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
+                    {
+                        if (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]))
+                        {
+                            if (hitbox.Right > LevelBuilder.Instance.collisionBoxes[i].Left && (hitbox.Right - hitbox.Width / 2) <= LevelBuilder.Instance.collisionBoxes[i].Left)
+                            {
+                                hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Left - drawnTex.Width;
+                            }
+                            else if (hitbox.Left < LevelBuilder.Instance.collisionBoxes[i].Right && (hitbox.Left + hitbox.Width / 2) >= LevelBuilder.Instance.collisionBoxes[i].Right)
+                            {
+                                hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Right;
+                            }
+                        }
+                    }
+
+                    if (kbState.IsKeyDown(GameControls.Instance.duckKey))
                     {
                         pState = playerStates.Duck;
                     }
@@ -319,23 +325,23 @@ namespace Late_To_Class
                     {
                         position.Y += (int)jumpHeight;
 
-                        if (kbState.IsKeyUp(jumpKey))
+                        if (kbState.IsKeyUp(GameControls.Instance.jumpKey))
                         {
                             jumpHeight += 0.75;
 
                         }
 
-                        if (kbState.IsKeyDown(leftKey))
+                        if (kbState.IsKeyDown(GameControls.Instance.moveLeft))
                         {
                             dirRight = false;
                         }
-                        else if (kbState.IsKeyDown(rightKey))
+                        else if (kbState.IsKeyDown(GameControls.Instance.moveRight))
                         {
                             dirRight = true;
                         }
 
                         //this decelerates the player while jumping
-                        if (kbState.IsKeyUp(leftKey) && kbState.IsKeyUp(rightKey) /*&& dirRight == true*/)
+                        if (kbState.IsKeyUp(GameControls.Instance.moveLeft) && kbState.IsKeyUp(GameControls.Instance.moveRight) /*&& dirRight == true*/)
                         {
                             if (speed > 0)
                             {
@@ -404,18 +410,18 @@ namespace Late_To_Class
 
 
                 case playerStates.Duck:
-                    if (kbState.IsKeyUp(duckKey))
+                    if (kbState.IsKeyUp(GameControls.Instance.duckKey))
                     {
                         pState = playerStates.Stand;
                     }
-                    if (kbState.IsKeyDown(jumpKey))
+                    if (kbState.IsKeyDown(GameControls.Instance.jumpKey))
                     {
                         // after collision is implemented, some code will go here for the player jumping down off a platform
                     }
                     break;
 
                 case playerStates.Slide:
-                    if (kbState.IsKeyUp(duckKey))
+                    if (kbState.IsKeyUp(GameControls.Instance.duckKey))
                     {
                         pState = playerStates.Run;
                     }
@@ -452,7 +458,9 @@ namespace Late_To_Class
             allAnims["run"].FPS = (speed + 1) * 1.8;
             allAnims["run"].UpdateSPF(); //this makes it so that when the player is just starting to run, his animation follows the speed and doesn't look too fast.
         }
+        #endregion
 
+        #region Draw
         public void Draw(SpriteBatch playerSprite)
         {
 
@@ -524,7 +532,9 @@ namespace Late_To_Class
             else
                 spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
         }
+        #endregion
 
+        #region Helpers
         public void UpdateAnimation(GameTime gameTime, AnimationHelper ah)
         {
             timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
@@ -541,5 +551,6 @@ namespace Late_To_Class
                 timeCounter -= ah.SPF;
             }
         }
+        #endregion
     }
 }

@@ -52,6 +52,8 @@
     <Compile Include="LevelManager.cs" />
     <Compile Include="LevelMenu.cs" />
     <Compile Include="MenuComponet.cs" />
+    <Compile Include="NPC.cs" />
+    <Compile Include="NPCGenerator.cs" />
     <Compile Include="OptionComponet.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="GameControls.cs" />
@@ -85,17 +87,23 @@
     <Content Include="Content\Mouse.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\NPCS.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\pause.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Play.jpg">
+    <Content Include="Content\Quit.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\player.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Quit.jpg">
+    <Content Include="Content\Play.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\TexTitle.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\timerBlackboard.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

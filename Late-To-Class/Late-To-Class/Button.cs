@@ -11,6 +11,7 @@ namespace Late_To_Class
 {
     class Button
     {
+        #region Variables
         Texture2D texture;
         Vector2 posistion;
         Rectangle rectangle;
@@ -18,25 +19,26 @@ namespace Late_To_Class
         Color color = new Color(255, 255, 255, 255);
         bool down;
         public bool isClicked;
+        #endregion
 
+        #region Properties
         public Color Color
         {
             get { return color; }
             set { color = value; }
-        }
+        }            
+        #endregion
 
-        public bool IsClicked {
-            get { return isClicked; }
-            set { isClicked = value; }
-        }
-
-        public void load(Texture2D newTexture, Vector2 newPos)
+        #region Load
+        public void Load(Texture2D newTexture, Vector2 newPos)
         {
             texture = newTexture;
             posistion = newPos;
 
         }
+        #endregion
 
+        #region Update and Draw
         public void Update(MouseState mouse)
         {
             mouse = Mouse.GetState();
@@ -54,11 +56,17 @@ namespace Late_To_Class
                     isClicked = true;
                     color.A = 255;
                 }
-                else if (color.A < 255) {
+                else if (color.A < 255)
+                {
                     color.A += 1;
                 }
 
             }
+            else
+            {
+                color.A = 255;
+            }
+
 
         }
 
@@ -66,5 +74,6 @@ namespace Late_To_Class
         {
             spriteBatch.Draw(texture, posistion, color);
         }
+        #endregion
     }
 }

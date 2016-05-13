@@ -13,16 +13,26 @@ namespace Late_To_Class
     /// </summary>
     public sealed class GameControls
     {
-        private static GameControls instance = null;
+        #region Variables
+        static GameControls instance = null;
         StreamReader input = null;
+
+        /// <summary>
+        /// default key values for first-time loadup
+        /// </summary>
         public Keys jumpKey = Keys.W;
         public Keys duckKey = Keys.S;
         public Keys moveLeft = Keys.A;
         public Keys moveRight = Keys.D;
         public Keys powerUpKey = Keys.J;
-        Keys[] conflicting = new Keys[5];
-                
 
+        /// <summary>
+        /// array holding all the keys, ensures that no two keys are set to the same input value
+        /// </summary>
+        public Keys[] conflicting = new Keys[5];
+        #endregion
+
+        #region Constructor
         /// <summary>
         /// Creates and returns a single instance of the GameControls class
         /// </summary>
@@ -34,8 +44,9 @@ namespace Late_To_Class
                 return instance;
             }
         }
-        
+        #endregion
 
+        #region Load and Save
         /// <summary>
         /// Loads in the saved control scheme from a file
         /// </summary>
@@ -100,24 +111,25 @@ namespace Late_To_Class
             {
                 output = new StreamWriter("controls.txt");
                 string sControls = (int)jumpKey + ";" + (int)duckKey + ";" + (int)moveLeft + ";" + (int)moveRight + ";" + (int)powerUpKey;
-                output.WriteLine(sControls);                
+                output.WriteLine(sControls);
             }
 
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
 
             finally
             {
-                if(output != null)
+                if (output != null)
                 {
                     output.Close();
                 }
             }
         }
+        #endregion
 
-
+        #region Helpers
         /// <summary>
         /// used with the control scheme option to enable player defined controls
         /// </summary>
@@ -190,12 +202,6 @@ namespace Late_To_Class
                     break;
             }
         }
-        //added this so i could get they keys
-        public Keys[] Conflitcting
-        {
-            get { return conflicting; }
-        }
-    }
-
-    
+        #endregion
+    }       
 }

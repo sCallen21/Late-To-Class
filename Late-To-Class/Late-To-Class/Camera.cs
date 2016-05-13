@@ -12,45 +12,52 @@ namespace Late_To_Class
     /// basic camera that is locked to the player and follows him across the screen, while within the bounds of the map
     /// </summary>
    public class Camera
-    {
-        private Matrix transform;
-        private Vector2 centre;
-        private Viewport viewport;
-        public Rectangle cameraView;
-        
+   {
+       #region Variables
+       Matrix transform;
+       Vector2 vCentre;
+       Viewport viewport;
+       public Rectangle cameraView;
+       #endregion
 
-        
-
-        public Matrix Transform
+       #region Properties
+       public Matrix Transform
         {
             get { return transform; }
         }
+       #endregion
 
+       #region Constructors
        public Camera(Viewport newViewport)
         {
             viewport = newViewport;
             cameraView = new Rectangle(0, 0, viewport.Width, viewport.Height);
         }
+       #endregion
 
-        //faffs around with the camera position based on the player position and the size(in pixels) of the screen
+       #region Update
+       /// <summary>
+       /// Controls the Camera, so that the player is always on screen no matter where they go in the map
+       /// </summary>
+       /// <param name="position"></param>
+       /// <param name="xOffset"></param>
+       /// <param name="yOffset"></param>
        public void Update(Vector2 position, int xOffset, int yOffset)
        {
-           if (position.X < viewport.Width / 2) { centre.X = viewport.Width / 2; }
-           else if (position.X > xOffset - (viewport.Width / 2)) { centre.X = xOffset - viewport.Width / 2; }
-           else { centre.X = position.X; }
+           if (position.X < viewport.Width / 2) { vCentre.X = viewport.Width / 2; }
+           else if (position.X > xOffset - (viewport.Width / 2)) { vCentre.X = xOffset - viewport.Width / 2; }
+           else { vCentre.X = position.X; }
 
-           if (position.Y < viewport.Height / 2) { centre.Y = viewport.Height / 2; }
-           else if (position.Y > yOffset - (viewport.Height / 2)) { centre.Y = yOffset - viewport.Height / 2; }
-           else { centre.Y = position.Y; }
+           if (position.Y < viewport.Height / 2) { vCentre.Y = viewport.Height / 2; }
+           else if (position.Y > yOffset - (viewport.Height / 2)) { vCentre.Y = yOffset - viewport.Height / 2; }
+           else { vCentre.Y = position.Y; }
 
            cameraView = new Rectangle((int)position.X - viewport.Width / 2, (int)position.Y - viewport.Height / 2, viewport.Width, viewport.Height);
 
            //actually moves the camera
-           transform = Matrix.CreateTranslation(new Vector3(-centre.X + (viewport.Width / 2),
-                                                              -centre.Y + (viewport.Height / 2), 0));
-
-            
-
+           transform = Matrix.CreateTranslation(new Vector3(-vCentre.X + (viewport.Width / 2),
+                                                              -vCentre.Y + (viewport.Height / 2), 0));
        }
-    }
+       #endregion
+   }
 }
