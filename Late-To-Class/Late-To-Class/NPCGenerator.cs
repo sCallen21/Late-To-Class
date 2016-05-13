@@ -6,16 +6,20 @@ using System;
  using System.Linq;
  using System.Text;
  
+//Chris Banks
  namespace Late_To_Class
  {
      class NPCGenerator
      {
+         #region Variables
          ContentManager Content;
          NPC person;
          Texture2D builder;
          List<NPC> people = new List<NPC>();
+#endregion
  
-        public List<NPC> CreateSpawn(ContentManager Content)
+         #region Helpers
+         public List<NPC> CreateSpawn(ContentManager Content)
          {
              this.Content = Content;
              builder = Content.Load<Texture2D>("NPCS");
@@ -39,7 +43,8 @@ using System;
             int red = rand.Next(0, 256);
             int green = rand.Next(0, 256);
             int blue = rand.Next(0, 256);
-            human.SetContent(nBodyStle, nHairStyle, red, green, blue, builder);        
+            human.SetContent(nBodyStle, nHairStyle, red, green, blue, builder);
         }
+#endregion
      }
  }

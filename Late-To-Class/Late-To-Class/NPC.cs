@@ -1,18 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
- using Microsoft.Xna.Framework.Graphics;
- using System;
- using System.Collections.Generic;
- using System.Linq;
- using System.Text;
- 
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+ //Chris Banks
  namespace Late_To_Class
  {
      class NPC
      {
- 
+         #region Variables
          Rectangle hitBox;
-         public Rectangle bodyPosition;
          Rectangle hairPosition;
          Rectangle BodySource;
          Rectangle HairSource;
@@ -22,23 +22,35 @@ using Microsoft.Xna.Framework.Content;
          Vector2 vVelocity;
          AnimationHelper helper;
          int nPlayerHeight;
+<<<<<<< HEAD
          int bodyType;
          int moveSwitch;
+=======
+         int nMoveSwitch;
+>>>>>>> 2c0ea7cbf68b505350b61dd37e5a019e173b374d
          bool bDirRight;
-         double timeCounter;
+         double dTimeCounter;
          Random movement;
- 
- 
+         public Rectangle bodyPosition;
+         #endregion
+
+         #region Constructor
          public NPC()
          {
              helper = new AnimationHelper(4, 4);
              bDirRight = true;
              vVelocity = Vector2.Zero;
              movement = new Random();
+<<<<<<< HEAD
              moveSwitch = 0;
              nPlayerHeight = 64;
+=======
+             nMoveSwitch = 0;
+>>>>>>> 2c0ea7cbf68b505350b61dd37e5a019e173b374d
          }
- 
+         #endregion
+
+         #region Load
          public void SetContent(int body, int hair, int r, int g, int b, Texture2D builder)
          {
              this.image = builder;
@@ -47,14 +59,20 @@ using Microsoft.Xna.Framework.Content;
              BodySource = new Rectangle(helper.CurrentFrame * 25, (nPlayerHeight * bodyType), 25, nPlayerHeight);
              hairTint = new Color(r, g, b);
          }
- 
+#endregion
+
+         #region Update and Draw
          public void Update(GameTime gameTime)
          {
              vPosition += vVelocity;
              bodyPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, nPlayerHeight);
              hairPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, 32);
+<<<<<<< HEAD
             BodySource = new Rectangle(helper.CurrentFrame * 25, (nPlayerHeight * bodyType), 25, nPlayerHeight);
             if (moveSwitch > 32)
+=======
+             if (nMoveSwitch > 32)
+>>>>>>> 2c0ea7cbf68b505350b61dd37e5a019e173b374d
              {
                  if (vVelocity.X != 0)
                  {
@@ -68,9 +86,9 @@ using Microsoft.Xna.Framework.Content;
                  }
                  else bDirRight = true;
 
-                 moveSwitch = 0;
+                 nMoveSwitch = 0;
              }
-             moveSwitch++;
+             nMoveSwitch++;
  
          }
  
@@ -121,9 +139,9 @@ using Microsoft.Xna.Framework.Content;
  
          public void UpdateMovement(GameTime gameTime, AnimationHelper ah)
          {
-             timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
+             dTimeCounter += gameTime.ElapsedGameTime.TotalSeconds;
  
-             if (timeCounter >= ah.SPF)
+             if (dTimeCounter >= ah.SPF)
              {
                  ah.CurrentFrame++;
  
@@ -132,10 +150,9 @@ using Microsoft.Xna.Framework.Content;
                      ah.CurrentFrame = 0;
                  }
  
-                 timeCounter -= ah.SPF;
+                 dTimeCounter -= ah.SPF;
              }
          }
- 
-     }
- 
+#endregion
+     } 
  } 

@@ -14,25 +14,27 @@ namespace Late_To_Class
     /// </summary>
     public sealed class LevelBuilder
     {
+        #region Variables
         private static LevelBuilder instance = null;
         StreamReader input = null;
         int[,] map;
         int[,] spawnMap;
         Texture2D tileSheet;
-        public Rectangle[,] Source;
         Rectangle[,] spawnSource;
         Rectangle position;
+        Rectangle toDraw;
+        Point tileSize;
+        public Rectangle[,] Source;
+        public Point MapSize;
         public Point PlayerPosition;
         public Point GoalPosition;
         public List<Point> EnemySpawnPositions;
         public List<Rectangle> NPCSpawnPositions;
         public List<Point> PowerUpPositions;
-        Rectangle toDraw;
-        Point tileSize;
-        public Point MapSize;
         public List<Rectangle> collisionBoxes;
+        #endregion
 
-
+        #region Constructor
         /// <summary>
         /// Creates and returns a single instance of the LevelBuilder class
         /// </summary>
@@ -45,7 +47,9 @@ namespace Late_To_Class
                 return instance;
             }
         }
+        #endregion
 
+        #region Load
         /// <summary>
         /// loads in a map from a text file
         /// </summary>
@@ -137,7 +141,9 @@ namespace Late_To_Class
                 }
             }
         }
+        #endregion
 
+        #region Spawn Creator and Tile Creator
         /// <summary>
         /// builds collision and spawn points out of the map provided
         /// </summary>
@@ -192,10 +198,10 @@ namespace Late_To_Class
                     Source[y, x] = toDraw;
                 }
             }
-
-
         }
+        #endregion
 
+        #region Draw
         /// <summary>
         /// draws all non empty tile spaces that are in the screen
         /// </summary>
@@ -210,12 +216,11 @@ namespace Late_To_Class
                     if (map[y, x] != -1)
                     {
                         position = new Rectangle(x * tileSize.X, y * tileSize.Y, tileSize.X, tileSize.Y);
-
-                        //if (position.X < CameraOrigin.X + screen.X + tileSize.X && position.X >= CameraOrigin.X && position.Y < CameraOrigin.Y + screen.Y + tileSize.Y && position.Y >= CameraOrigin.Y)
-                            spriteBatch.Draw(tileSheet, position, Source[y, x], Color.White);
+                        spriteBatch.Draw(tileSheet, position, Source[y, x], Color.White);
                     }
                 }
             }
         }
+        #endregion
     }
 }

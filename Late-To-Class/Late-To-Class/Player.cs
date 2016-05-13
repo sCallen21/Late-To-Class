@@ -12,19 +12,17 @@ namespace Late_To_Class
 {
     public class Player
     {
-        public Rectangle drawnTex;
+        #region Variables
+        Rectangle drawnTex;
         public Rectangle hitbox;
-        private Texture2D tex;
+        Texture2D tex;
         public Vector2 position;
         int playerHeight = 64;
         int playerWidth = 64;
-
-
-        private double jumpHeight;
-
-
-
-              
+        double jumpHeight;
+        bool dirRight; //bool indicating facing direction with right == true
+        bool jumping;
+                      
         //these variables handle acceleration of the player
         public int speed; //determines how fast the player is moving. This value increases as the player continues to move.
         private int maxSpeed; //determines the player's max speed
@@ -36,7 +34,9 @@ namespace Late_To_Class
         Rectangle sourceRec; //this rectangle defines the portion of the texture it should grab.
         Dictionary<string, AnimationHelper> allAnims; //holds all animationhelpers for player
         double timeCounter; //counts ticks of the gametime
+        #endregion
 
+        #region Properties
         public Texture2D Tex
         {
             set { tex = value; }
@@ -56,14 +56,11 @@ namespace Late_To_Class
             Duck,
             Slide
         }
-
         playerStates pState;
         playerStates prevState; //this records the state the player had on the previous state
+        #endregion
 
-
-        bool dirRight; //bool indicating facing direction with right == true
-        bool jumping;
-
+        #region Constructors
         public Player()
         {
 
@@ -90,12 +87,16 @@ namespace Late_To_Class
             allAnims.Add("run", new AnimationHelper(5, 10));
             allAnims.Add("jump", new AnimationHelper(12, 10));
         }
+        #endregion
 
+        #region Load
         public void Load(ContentManager Content)
         {
             tex = Content.Load<Texture2D>("player");
         }
+        #endregion
 
+        #region Update
         public void Update(GameTime gameTime)
         {
             KeyboardState kbState = Keyboard.GetState();
@@ -468,7 +469,9 @@ namespace Late_To_Class
             allAnims["run"].FPS = (speed + 1) * 1.8;
             allAnims["run"].UpdateSPF(); //this makes it so that when the player is just starting to run, his animation follows the speed and doesn't look too fast.
         }
+        #endregion
 
+        #region Draw
         public void Draw(SpriteBatch playerSprite)
         {
 
@@ -540,7 +543,9 @@ namespace Late_To_Class
             else
                 spriteBatch.Draw(tex, drawnTex, sourceRec, Color.White, 0.0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0.0f);
         }
+        #endregion
 
+        #region Helpers
         public void UpdateAnimation(GameTime gameTime, AnimationHelper ah)
         {
             timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
@@ -557,5 +562,6 @@ namespace Late_To_Class
                 timeCounter -= ah.SPF;
             }
         }
+        #endregion
     }
 }
