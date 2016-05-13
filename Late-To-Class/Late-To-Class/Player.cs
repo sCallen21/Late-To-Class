@@ -293,23 +293,6 @@ namespace Late_To_Class
                         pState = playerStates.Jump;
                     }
 
-
-
-                    for (int i = 0; i < LevelBuilder.Instance.collisionBoxes.Count; i++)
-                    {
-                        if (hitbox.Intersects(LevelBuilder.Instance.collisionBoxes[i]))
-                        {
-                            if (hitbox.Right > LevelBuilder.Instance.collisionBoxes[i].Left && (hitbox.Right - hitbox.Width / 2) <= LevelBuilder.Instance.collisionBoxes[i].Left)
-                            {
-                                hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Left - drawnTex.Width;
-                            }
-                            else if (hitbox.Left < LevelBuilder.Instance.collisionBoxes[i].Right && (hitbox.Left + hitbox.Width / 2) >= LevelBuilder.Instance.collisionBoxes[i].Right)
-                            {
-                                hitbox.X = LevelBuilder.Instance.collisionBoxes[i].Right;
-                            }
-                        }
-                    }
-
                     if (kbState.IsKeyDown(GameControls.Instance.duckKey))
                     {
                         pState = playerStates.Duck;
