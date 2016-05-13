@@ -12,7 +12,6 @@ using System.Text;
      class NPC
      {
          #region Variables
-         Rectangle hitBox;
          Rectangle hairPosition;
          Rectangle BodySource;
          Rectangle HairSource;
@@ -23,7 +22,6 @@ using System.Text;
          AnimationHelper helper;
          int nPlayerHeight;
          int bodyType;
-         int moveSwitch;
          int nMoveSwitch;
          bool bDirRight;
          double dTimeCounter;
@@ -51,6 +49,7 @@ using System.Text;
              HairSource = new Rectangle(25 * hair, 3 * nPlayerHeight, 25, 64);
              BodySource = new Rectangle(helper.CurrentFrame * 25, (nPlayerHeight * bodyType), 25, nPlayerHeight);
              hairTint = new Color(r, g, b);
+             vVelocity = new Vector2(-1, 0);
          }
 #endregion
 
@@ -63,12 +62,10 @@ using System.Text;
             BodySource = new Rectangle(helper.CurrentFrame * 25, (nPlayerHeight * bodyType), 25, nPlayerHeight);
              if (nMoveSwitch > 32)
              {
-                 if (vVelocity.X != 0)
-                 {
                      UpdateMovement(gameTime, helper);
                      vVelocity.X = movement.Next(-2, 3);
                      
-                 }
+                 
                  if (vVelocity.X < 0)
                  {
                      bDirRight = false;
