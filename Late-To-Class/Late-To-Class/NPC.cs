@@ -22,12 +22,9 @@ using System.Text;
          Vector2 vVelocity;
          AnimationHelper helper;
          int nPlayerHeight;
-<<<<<<< HEAD
          int bodyType;
          int moveSwitch;
-=======
          int nMoveSwitch;
->>>>>>> 2c0ea7cbf68b505350b61dd37e5a019e173b374d
          bool bDirRight;
          double dTimeCounter;
          Random movement;
@@ -41,12 +38,8 @@ using System.Text;
              bDirRight = true;
              vVelocity = Vector2.Zero;
              movement = new Random();
-<<<<<<< HEAD
-             moveSwitch = 0;
              nPlayerHeight = 64;
-=======
              nMoveSwitch = 0;
->>>>>>> 2c0ea7cbf68b505350b61dd37e5a019e173b374d
          }
          #endregion
 
@@ -67,12 +60,8 @@ using System.Text;
              vPosition += vVelocity;
              bodyPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, nPlayerHeight);
              hairPosition = new Rectangle((int)vPosition.X, (int)vPosition.Y, 32, 32);
-<<<<<<< HEAD
             BodySource = new Rectangle(helper.CurrentFrame * 25, (nPlayerHeight * bodyType), 25, nPlayerHeight);
-            if (moveSwitch > 32)
-=======
              if (nMoveSwitch > 32)
->>>>>>> 2c0ea7cbf68b505350b61dd37e5a019e173b374d
              {
                  if (vVelocity.X != 0)
                  {
