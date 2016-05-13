@@ -65,7 +65,7 @@ namespace Late_To_Class
 
             foreach(Rectangle cluster in LevelBuilder.Instance.NPCSpawnPositions)
             {
-               // NPCHolder.Add(new Tuple<List<NPC>, Rectangle>(npcBuilder.CreateSpawn(Content), cluster));
+                NPCHolder.Add(new Tuple<List<NPC>, Rectangle>(npcBuilder.CreateSpawn(Content), cluster));
             }
             foreach(Point guard in LevelBuilder.Instance.EnemySpawnPositions)
             {
@@ -130,7 +130,7 @@ namespace Late_To_Class
                  {
                      foreach (NPC npc in cluster.Item1)
                      {
-                         if (npc.bodyPosition.Intersects(camera.cameraView))
+                         //if (npc.bodyPosition.Intersects(camera.cameraView))
                              npc.Draw(spriteBatch);
                      }
                  }
